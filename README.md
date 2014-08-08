@@ -6,7 +6,7 @@ Supports: Rails 4.1 + Postgres
 ### Why
 Users can update various database record but you want administrators to approve all changes before they are applied.
 
-### What
+### How
 ```ruby
 class Article < ActiveRecord::Base
   acts_as_approvable
