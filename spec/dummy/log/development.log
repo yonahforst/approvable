@@ -337,3 +337,52 @@ Migrating to CreateListings (20140807144654)
   [1m[35mSQL (0.3ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20140807144654"]]
   [1m[36m (0.5ms)[0m  [1mCOMMIT[0m
   [1m[35mActiveRecord::SchemaMigration Load (0.5ms)[0m  SELECT "schema_migrations".* FROM "schema_migrations"
+PG::UndefinedTable: ERROR:  relation "approvable_change_requests" does not exist
+LINE 5:                WHERE a.attrelid = '"approvable_change_reques...
+                                          ^
+:               SELECT a.attname, format_type(a.atttypid, a.atttypmod),
+                     pg_get_expr(d.adbin, d.adrelid), a.attnotnull, a.atttypid, a.atttypmod
+                FROM pg_attribute a LEFT JOIN pg_attrdef d
+                  ON a.attrelid = d.adrelid AND a.attnum = d.adnum
+               WHERE a.attrelid = '"approvable_change_requests"'::regclass
+                 AND a.attnum > 0 AND NOT a.attisdropped
+               ORDER BY a.attnum
+
+  [1m[36mActiveRecord::SchemaMigration Load (0.4ms)[0m  [1mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+  [1m[35mActiveRecord::SchemaMigration Load (0.3ms)[0m  SELECT "schema_migrations".* FROM "schema_migrations"
+  [1m[36mActiveRecord::SchemaMigration Load (0.7ms)[0m  [1mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+Migrating to CreateApprovableChangeRequests (20140807145534)
+  [1m[35m (0.1ms)[0m  BEGIN
+  [1m[36m (66.8ms)[0m  [1mCREATE TABLE "approvable_change_requests" ("id" serial primary key, "approvable_type" character varying(255), "approvable_id" integer, "requested_changes" json, "state" character varying(255), "approver_type" character varying(255), "approver_id" integer, "created_at" timestamp, "updated_at" timestamp) [0m
+  [1m[35mSQL (0.3ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20140807145534"]]
+  [1m[36m (33.9ms)[0m  [1mCOMMIT[0m
+  [1m[35mActiveRecord::SchemaMigration Load (0.2ms)[0m  SELECT "schema_migrations".* FROM "schema_migrations"
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35m (33.6ms)[0m  SELECT COUNT(*) FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" IS NULL AND ("approvable_change_requests"."state" != 'approved')
+  [1m[36mSQL (19.0ms)[0m  [1mINSERT INTO "listings" ("created_at", "updated_at") VALUES ($1, $2) RETURNING "id"[0m  [["created_at", "2014-08-08 16:12:35.751659"], ["updated_at", "2014-08-08 16:12:35.751659"]]
+  [1m[35mSQL (0.7ms)[0m  INSERT INTO "approvable_change_requests" ("approvable_id", "approvable_type", "created_at", "requested_changes", "state", "updated_at") VALUES ($1, $2, $3, $4, $5, $6) RETURNING "id"  [["approvable_id", 1], ["approvable_type", "Listing"], ["created_at", "2014-08-08 16:12:35.800177"], ["requested_changes", "{\"title\":\"foo\"}"], ["state", "pending"], ["updated_at", "2014-08-08 16:12:35.800177"]]
+  [1m[36m (0.6ms)[0m  [1mCOMMIT[0m
+  [1m[35m (0.5ms)[0m  BEGIN
+  [1m[36mSQL (0.6ms)[0m  [1mUPDATE "approvable_change_requests" SET "state" = $1, "updated_at" = $2 WHERE "approvable_change_requests"."id" = 1[0m  [["state", "submitted"], ["updated_at", "2014-08-08 16:39:17.392011"]]
+  [1m[35m (0.8ms)[0m  COMMIT
+  [1m[36m (0.4ms)[0m  [1mBEGIN[0m
+  [1m[35m (0.2ms)[0m  ROLLBACK
+  [1m[36m (0.4ms)[0m  [1mBEGIN[0m
+  [1m[35m (0.3ms)[0m  ROLLBACK
+  [1m[36mActiveRecord::SchemaMigration Load (0.4ms)[0m  [1mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+Migrating to AddNotesToApprovableChangeRequests (20140809183112)
+  [1m[35m (0.1ms)[0m  BEGIN
+  [1m[36m (1.1ms)[0m  [1mALTER TABLE "approvable_change_requests" ADD COLUMN "notes" json[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20140809183112"]]
+  [1m[36m (0.5ms)[0m  [1mCOMMIT[0m
+  [1m[35mActiveRecord::SchemaMigration Load (0.3ms)[0m  SELECT "schema_migrations".* FROM "schema_migrations"
+  [1m[36m (177.3ms)[0m  [1mDROP DATABASE IF EXISTS "approvable_dummy_development"[0m
+  [1m[35m (807.6ms)[0m  CREATE DATABASE "approvable_dummy_development" ENCODING = 'unicode'
+  [1m[36mSQL (35.6ms)[0m  [1mCREATE EXTENSION IF NOT EXISTS "plpgsql"[0m
+  [1m[35m (6.4ms)[0m  CREATE TABLE "approvable_change_requests" ("id" serial primary key, "approvable_type" character varying(255), "approvable_id" integer, "requested_changes" json, "state" character varying(255), "approver_type" character varying(255), "approver_id" integer, "created_at" timestamp, "updated_at" timestamp, "notes" json) 
+  [1m[36m (3.8ms)[0m  [1mCREATE TABLE "listings" ("id" serial primary key, "title" character varying(255), "description" text, "image" character varying(255), "deleted" boolean, "created_at" timestamp, "updated_at" timestamp) [0m
+  [1m[35m (1.0ms)[0m  CREATE TABLE "schema_migrations" ("version" character varying(255) NOT NULL) 
+  [1m[36m (1.3ms)[0m  [1mCREATE UNIQUE INDEX  "unique_schema_migrations" ON "schema_migrations"  ("version")[0m
+  [1m[35m (0.3ms)[0m  SELECT version FROM "schema_migrations"
+  [1m[36m (0.9ms)[0m  [1mINSERT INTO "schema_migrations" (version) VALUES ('20140809183112')[0m
+  [1m[35m (0.5ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20140807144654')

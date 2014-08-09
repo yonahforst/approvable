@@ -10,26 +10,40 @@ module Approvable
     
     scope :unapproved, -> {where.not(state: 'approved')}
     
-    state_machine :initial => :pending do        
+    include AASM
+    
+    aasm column: :state do
+      
+      state :pending, :initial => true
+      state :submitted
+      state :rejected
+      state :approved
+      
       event :submit do
-        transition [:rejected, :pending] => :submitted
+        transitions from: [:rejected, :pending], to: :submitted
       end
       
       event :unsubmit do
-        transition :submitted => :pending
+        transitions from: :submitted, to: :pending
       end
 
       event :approve do
-        transition :submitted => :approved
+        transitions from: :submitted, to: :approved
       end
 
       event :reject do
-        transition :submitted => :rejected
+        transitions from: :submitted, to: :rejected, :on_transition => Proc.new {|obj, *args| obj.transition_options(*args)}
       end
       
       event :unreject do
-        transition :rejected => :pending
+        transitions from: :rejected, to: :pending
       end
+    end
+    
+    def transition_options(options = {})
+      note = options[:note] if options
+      self.notes ||= {}
+      self.notes[Time.now.to_s] = note if note      
     end
     
     private
@@ -48,7 +62,7 @@ module Approvable
     
     def update_rejected_to_pending
       if rejected?
-        unreject
+        unreject!
       end
     end
     

@@ -6,7 +6,7 @@ module Approvable
     end
  
     module ClassMethods
-      def acts_as_approvable(options = {})
+      def acts_as_approvable options = {}
         include Approvable::ActsAsApprovable::LocalInstanceMethods
 
         has_many :change_requests, as: :approvable, class_name: 'Approvable::ChangeRequest'
@@ -20,36 +20,59 @@ module Approvable
     end
     
     module LocalInstanceMethods
-      
+               
       def change_status
-        current_change_request.state if current_change_request
+        current_change_request ? current_change_request.state : 'approved'
       end
       
-      def with_changes
-        self.attributes = current_change_request.requested_changes || {}
+      def change_status_notes
+        current_change_request.notes if current_change_request
+      end
+            
+      def apply_changes
+        self.attributes = current_change_request.requested_changes || {} if current_change_request
         self
       end
       
       def submit_changes
-        current_change_request.submit
+        current_change_request.submit!
       end
       
       def unsubmit_changes
-        current_change_request.unsubmit
+        current_change_request.unsubmit!
       end
       
       def approve_changes
-        if with_changes.save_without_change_request
-          current_change_request.approve
+        if apply_changes.save_without_change_request
+          current_change_request.approve!
         end
       end
       
-      def reject_changes
-        current_change_request.reject
+      def reject_changes options = {}
+        current_change_request.reject! :rejected, options
       end
       
       private
-      
+
+      def method_missing(meth, *args, &block)
+        if meth.to_s =~ /^(.+)_with_changes$/
+          _with_changes($1, *args, &block)
+
+        else
+          super # You *must* call super if you don't handle the
+                # method, otherwise you'll mess up Ruby's method
+                # lookup.
+        end
+      end
+
+      def _with_changes name, *args, &block
+        if current_change_request && new_value = current_change_request.requested_changes[name]
+          new_value
+        else
+          send name, *args, &block
+        end
+      end
+
       def existing_changes
         current_change_request.try(:requested_changes) || {}
       end

@@ -18,8 +18,7 @@ Gem::Specification.new do |s|
   s.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.rdoc"]
 
   s.add_dependency "rails", "~> 4.1.4"
-  s.add_dependency 'state_machine'
-  s.add_dependency 'ruby-graphviz'
+  s.add_dependency 'aasm'
   
 
   s.add_development_dependency "pg"

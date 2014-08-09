@@ -7,18 +7,18 @@ FactoryGirl.define do
 
 
     trait :approved do
-      after(:create) {|c| c.submit; c.approve}
+      after(:create) {|c| c.submit!; c.approve!}
     end
 
     trait :pending do
     end
     
     trait :submitted do
-      after(:create) {|c| c.submit}
+      after(:create) {|c| c.submit!}
     end
     
     trait :rejected do
-      after(:create) {|c| c.submit; c.reject}
+      after(:create) {|c| c.submit!; c.reject!}
     end
 
         

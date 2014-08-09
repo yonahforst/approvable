@@ -11,10 +11,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140807144654) do
+ActiveRecord::Schema.define(version: 20140809183112) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "approvable_change_requests", force: true do |t|
+    t.string   "approvable_type"
+    t.integer  "approvable_id"
+    t.json     "requested_changes"
+    t.string   "state"
+    t.string   "approver_type"
+    t.integer  "approver_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.json     "notes"
+  end
 
   create_table "listings", force: true do |t|
     t.string   "title"

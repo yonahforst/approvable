@@ -1,7 +1,5 @@
 require 'approvable/acts_as_approvable'
-require 'state_machine'
-require 'graphviz' # Optional: only required for graphing
-require 'state_machine/version'
+require 'aasm'
 
 module Approvable
   class Engine < ::Rails::Engine
@@ -14,19 +12,6 @@ module Approvable
         end
       end
     end
-    
-
-    initializer :state_machine do |app|
-     unless StateMachine::VERSION == '1.2.0'
-       # If you see this message, please test removing this file
-       # If it's still required, please bump up the version above
-       Rails.logger.warn "Please remove me, StateMachine version has changed"
-     end
-
-     module StateMachine::Integrations::ActiveModel
-       public :around_validation
-     end
-   end
     
     
     config.generators do |g|
