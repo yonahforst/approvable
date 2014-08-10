@@ -14,7 +14,7 @@ end
 
 article = Article.create(title: 'food') #=> #<Article id: 1, title: nil>
 article #=> #<Article id: 1, title: nil>
-article.with_changes #=> #<Article id: 1, title: 'food'>
+article.title_with_changes #=> 'food'
 article.submit_changes #=> true
 article.approve_changes #=> true 
 article #=> #<Article id: 1, title: 'food'>
@@ -39,13 +39,13 @@ article.change_status #=> nil
 article.title = 'the beach' #=> 'the beach'
 article.save #=> true
 article.title #=> 'food'
-article.with_changes.title #=> 'the beach'
+article.title_with_changes #=> 'the beach'
 article.change_status #=> 'pending'
 
   #Making another change
 article.update(title: 'space and time') #=> true
 article.title #=> 'food'
-article.with_changes.title #=> 'space and time'
+article.title_with_changes #=> 'space and time'
 article.change_status #=> 'pending'
 
   # Submitting changes
@@ -60,7 +60,7 @@ article.errors #=> {:"current_change_request.base"=>["cannot change a submitted 
 aritlce.unsubmit_changes #=> true
 article.update(title: 'hipster beards') #=> true
 article.title #=> 'food'
-article.with_changes.title #=> 'hipster beards'
+article.title_with_changes #=> 'hipster beards'
 
   # Rejecting changes
 article.reject_changes #=> true
@@ -70,7 +70,7 @@ article.change_status #=> 'rejected'
 article.change_status #=> 'rejected'
 article.update(title: 'fixies and coffee')
 article.title #=> 'food'
-article.with_changes.title #=> 'fixies and coffee'
+article.title_with_changes #=> 'fixies and coffee'
 article.change_status #=> 'pending'
 article.submit_changes #=> true
 article.change_status #=> 'submitted'
