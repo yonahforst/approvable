@@ -6,8 +6,72 @@ module Approvable
       @listing = create(:listing, :approved)
     end
     
-    it 'responds to acts_as_approvable to class' do
-      expect(Listing).to respond_to :acts_as_approvable
+    context ".acts_as_approvable" do
+      it 'responds' do
+        expect(Listing).to respond_to :acts_as_approvable
+      end
+      
+      it 'doesnt track attribute excluded by except option' do
+        Listing.class_eval { acts_as_approvable except: :title }
+
+        expect{
+          @listing.update(title: 'a brand new title')
+        }.not_to change {@listing.change_requests.count}
+        @listing.reload
+        
+        expect(@listing.title).to eq 'a brand new title'             
+      end
+      
+      it 'doesnt track attribute array excluded by except option' do
+        Listing.class_eval { acts_as_approvable except: [:title, :image]}
+        expect{
+          @listing.update(title: 'a brand new title', image: 'me.jpg')
+        }.not_to change {@listing.change_requests.count}
+        @listing.reload
+        expect(@listing.title).to eq 'a brand new title'              
+        expect(@listing.image).to eq 'me.jpg'              
+      end
+      
+      it 'doesnt track attribute not included by only option' do
+        Listing.class_eval { acts_as_approvable only: :image }
+        
+        expect{
+          @listing.update(title: 'a brand new title')
+        }.not_to change {@listing.change_requests.count}
+        @listing.reload
+        
+        expect(@listing.title).to eq 'a brand new title'              
+      end
+      
+      it 'doesnt track attributes not included by only array' do
+        Listing.class_eval { acts_as_approvable only: [:description, :deleted]}
+        expect{
+          @listing.update(title: 'a brand new title', image: 'me.jpg')
+        }.not_to change {@listing.change_requests.count}
+        @listing.reload
+        expect(@listing.title).to eq 'a brand new title'              
+        expect(@listing.image).to eq 'me.jpg'              
+      end
+      
+      it 'tracks attributes not excluded by except' do
+        Listing.class_eval { acts_as_approvable except: :description }
+        
+        expect{
+          @listing.update(title: 'a brand new title')
+        }.to change {@listing.change_requests.count}.by(1)
+        
+        expect(@listing.title).not_to eq 'a brand new title'              
+      end
+      
+      it 'tracks attributes included by only' do
+        Listing.class_eval { acts_as_approvable only: :title }
+        
+        expect{
+          @listing.update(title: 'a brand new title')
+        }.to change {@listing.change_requests.count}.by(1)
+        
+        expect(@listing.title).not_to eq 'a brand new title'              
+      end
     end
     
     it 'has_many change_requests' do
@@ -15,7 +79,7 @@ module Approvable
     end
         
     context '#apply_changes' do
-      it 'responds to apply_changes method' do
+      it 'responds' do
         expect(@listing).to respond_to :apply_changes
       end
       
@@ -36,7 +100,7 @@ module Approvable
     
     context '#current_change_request' do
       
-      it 'has_one current_change_request' do
+      it 'has_one' do
         expect(@listing).to respond_to :current_change_request
       end
       
@@ -60,7 +124,7 @@ module Approvable
     end
 
     context '#change_status' do
-      it 'delegates change_status to current_change_request' do
+      it 'delegates to current_change_request' do
         create(:change_request, :approved, approvable: @listing )
         create(:change_request, :submitted, approvable: @listing )
         @listing.reload
@@ -73,26 +137,6 @@ module Approvable
         create(:change_request, :approved, approvable: @listing )
       
         expect(@listing.change_status).to eq 'approved'
-      end
-    end
-    
-    context '#change_status=' do
-      it 'updates current_change_request state' do
-        @listing.update(title: 'a brand new title')
-        @listing.update(change_status: 'submitted')
-        @listing.reload
-        
-        expect(@listing.change_status).to eq 'submitted'
-      end
-      
-      it 'doesnt transition to invalid state' do
-        @listing.update!(title: 'a brand new title')
-        expect{
-          @listing.update!(change_status: 'accepted')
-        }.to raise_error ActiveRecord::RecordInvalid
-        @listing.reload
-        
-        expect(@listing.change_status).to eq 'pending'
       end
     end
     
@@ -145,7 +189,7 @@ module Approvable
         @listing.reload
       
         expect{
-          @listing.update!(description: 'a hot bod')
+          @listing.update(description: 'a hot bod')
         }.not_to change {@listing.change_requests.count}
 
         change_request.reload      
@@ -157,9 +201,8 @@ module Approvable
         change_request = create(:change_request, :submitted, approvable: @listing )
         @listing.reload
       
-        expect{
-          @listing.update!(title: 'a brand new title')        
-        }.to raise_error ActiveRecord::RecordInvalid
+        @listing.update(title: 'a brand new title')
+        expect(@listing.errors).not_to be_empty      
       
         change_request.reload
         expect(change_request.requested_changes).not_to match "title" => 'a brand new title'
@@ -171,7 +214,7 @@ module Approvable
         @listing.reload
       
         expect{
-          @listing.update!(title: 'a brand new title')
+          @listing.update(title: 'a brand new title')
         }.not_to change {@listing.change_requests.count}
 
         change_request.reload
@@ -183,7 +226,7 @@ module Approvable
     
     context '#submit/#unsubmit/#approve/#reject' do
       it 'submits changes' do
-        @listing.update!(title: 'a brand new title')
+        @listing.update(title: 'a brand new title')
         @listing.submit_changes
       
         expect(@listing.change_status).to eq 'submitted'
@@ -193,7 +236,7 @@ module Approvable
       end
     
       it 'unsubmits changes' do
-        @listing.update!(title: 'a brand new title')
+        @listing.update(title: 'a brand new title')
         @listing.submit_changes
         @listing.unsubmit_changes
       
@@ -204,7 +247,7 @@ module Approvable
       end
     
       it 'approves changes' do
-        @listing.update!(title: 'a brand new title')
+        @listing.update(title: 'a brand new title')
         @listing.submit_changes
             
         @listing.approve_changes
@@ -216,7 +259,7 @@ module Approvable
       end
     
       it 'rejects changes' do
-        @listing.update!(title: 'a brand new title')
+        @listing.update(title: 'a brand new title')
         @listing.submit_changes
         @listing.reject_changes
         @listing.reload
@@ -226,7 +269,7 @@ module Approvable
       end
       
       it 'rejects with notes' do
-        @listing.update!(title: 'a brand new title')
+        @listing.update(title: 'a brand new title')
         @listing.submit_changes
         @listing.reject_changes(note: 'i dont like it')
         @listing.reload
@@ -243,13 +286,13 @@ module Approvable
     
     context '#_with_changes' do
       it 'returns attribtue with new value' do
-        @listing.update!(title: 'a brand new title')
+        @listing.update(title: 'a brand new title')
         expect(@listing.title).not_to eq 'a brand new title'
         expect(@listing.title_with_changes).to eq 'a brand new title'
       end
       
       it 'returns existing value it unchanged' do
-        @listing.update!(title: 'a brand new title')
+        @listing.update(title: 'a brand new title')
         expect(@listing.description_with_changes).to eq @listing.description
       end
       

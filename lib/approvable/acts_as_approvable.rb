@@ -6,17 +6,19 @@ module Approvable
     end
  
     module ClassMethods
-      def acts_as_approvable options = {}
+      def acts_as_approvable **options
         include Approvable::ActsAsApprovable::LocalInstanceMethods
 
         has_many :change_requests, as: :approvable, class_name: 'Approvable::ChangeRequest'
         has_one :current_change_request, -> {where.not(state: 'approved') }, as: :approvable, class_name: 'Approvable::ChangeRequest'
         
         validate :changes_are_not_submitted
-        alias_method_chain :save, :change_request
-        alias_method_chain :save!, :change_request
         accepts_nested_attributes_for :current_change_request, update_only: true
         
+        cattr_accessor :ignored_attrs
+        self.ignored_attrs = [*options[:except]]
+        self.ignored_attrs = self.attribute_names.map(&:to_sym) - [*options[:only]] if options[:only]
+        self.ignored_attrs.map!(&:to_s)
       end
     end
     
@@ -25,11 +27,7 @@ module Approvable
       def change_status
         current_change_request ? current_change_request.state : 'approved'
       end
-      
-      def change_status= new_status
-        current_change_request.state = new_status
-      end
-      
+
       def change_status_notes
         current_change_request.notes if current_change_request
       end
@@ -50,12 +48,22 @@ module Approvable
       def approve_changes
         transaction do
           current_change_request.approve!
-          apply_changes.save_without_change_request
+          apply_changes.save!
         end
       end
       
       def reject_changes options = {}
         current_change_request.reject! :rejected, options
+      end
+      
+      def save *args, &block
+        if valid?
+          add_changes_to_change_request
+          revert_changed_attributes
+          super(validate: false)
+        else
+          false
+        end
       end
       
       private
@@ -87,37 +95,24 @@ module Approvable
         self.attributes.select {|k,v| changed_attributes.keys.include? k}
       end
         
-      
       def all_changes
         existing_changes.merge new_changes
       end
       
-      def move_changes_to_change_request
-        self.current_change_request_attributes = {requested_changes: all_changes}
-        self.attributes = self.changed_attributes
+      def add_changes_to_change_request
+        approvable_changes =  all_changes.except(*self.class.ignored_attrs)
+        self.current_change_request_attributes = {requested_changes: approvable_changes} if approvable_changes.any?
       end
       
-      def save_with_change_request *args, &block
-        if valid?
-          move_changes_to_change_request
-          save_without_change_request *args << {validate: false}, &block
-        else
-          false
-        end
-      end
-      
-      def save_with_change_request! *args, &block
-        if valid?
-          move_changes_to_change_request
-          save_without_change_request! *args << {validate: false}, &block
-        else
-          raise ActiveRecord::RecordInvalid.new(self)
-        end
+      def revert_changed_attributes
+        self.attributes = changed_attributes.except(*self.class.ignored_attrs)
       end
       
       def changes_are_not_submitted
-        if change_status == 'submitted'
-          changed_attributes.keys.each do |attribute|
+        ignored_attrs = self.class.ignored_attrs
+  
+        if change_status == 'submitted' && changed_attributes.except(*ignored_attrs).any?
+          changed_attributes.except(*ignored_attrs).keys.each do |attribute|
             errors.add(attribute, 'Cannot make changes once submitted for approval.')
           end
         end

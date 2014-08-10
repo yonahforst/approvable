@@ -49,7 +49,7 @@ module Approvable
     private
     
     def not_submitted_or_approved
-      if approved? || submitted? 
+      if ['approved', 'submitted'].include? state_was
         errors.add(:base, "cannot change a #{state} request")
       end
     end

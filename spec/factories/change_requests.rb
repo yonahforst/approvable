@@ -7,44 +7,21 @@ FactoryGirl.define do
 
 
     trait :approved do
-      after(:create) {|c| c.submit!; c.approve!}
+      state :approved
     end
 
     trait :pending do
+      state :pending
+      
     end
     
     trait :submitted do
-      after(:create) {|c| c.submit!}
+      state :submitted
     end
     
     trait :rejected do
-      after(:create) {|c| c.submit!; c.reject!}
+      state :rejected
     end
-
-        
-    # trait :pending do
-    #   submitted_at nil
-    #   approved_at nil
-    #   rejected_at nil
-    # end
-    #
-    # trait :submitted do
-    #   submitted_at {Time.now}
-    #   approved_at nil
-    #   rejected_at nil
-    # end
-    #
-    # trait :approved do
-    #   submitted_at {Time.now}
-    #   approved_at {Time.now}
-    #   rejected_at nil
-    # end
-    #
-    # trait :rejected do
-    #   submitted_at {Time.now}
-    #   approved_at nil
-    #   rejected_at {Time.now}
-    # end
     
   end
 end
