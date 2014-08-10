@@ -386,3 +386,17 @@ Migrating to AddNotesToApprovableChangeRequests (20140809183112)
   [1m[35m (0.3ms)[0m  SELECT version FROM "schema_migrations"
   [1m[36m (0.9ms)[0m  [1mINSERT INTO "schema_migrations" (version) VALUES ('20140809183112')[0m
   [1m[35m (0.5ms)[0m  INSERT INTO "schema_migrations" (version) VALUES ('20140807144654')
+  [1m[36mListing Load (0.6ms)[0m  [1mSELECT  "listings".* FROM "listings"   ORDER BY "listings"."id" ASC LIMIT 1[0m
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36mSQL (0.6ms)[0m  [1mINSERT INTO "listings" ("created_at", "updated_at") VALUES ($1, $2) RETURNING "id"[0m  [["created_at", "2014-08-10 19:00:10.670491"], ["updated_at", "2014-08-10 19:00:10.670491"]]
+  [1m[35mSQL (0.5ms)[0m  INSERT INTO "approvable_change_requests" ("approvable_id", "approvable_type", "created_at", "requested_changes", "state", "updated_at") VALUES ($1, $2, $3, $4, $5, $6) RETURNING "id"  [["approvable_id", 1433], ["approvable_type", "Listing"], ["created_at", "2014-08-10 19:00:10.676803"], ["requested_changes", "{\"title\":\"hai\"}"], ["state", "pending"], ["updated_at", "2014-08-10 19:00:10.676803"]]
+  [1m[36m (0.5ms)[0m  [1mCOMMIT[0m
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "listings" ("created_at", "updated_at") VALUES ($1, $2) RETURNING "id"[0m  [["created_at", "2014-08-10 19:00:29.030037"], ["updated_at", "2014-08-10 19:00:29.030037"]]
+  [1m[35mSQL (0.7ms)[0m  INSERT INTO "approvable_change_requests" ("approvable_id", "approvable_type", "created_at", "requested_changes", "state", "updated_at") VALUES ($1, $2, $3, $4, $5, $6) RETURNING "id"  [["approvable_id", 1434], ["approvable_type", "Listing"], ["created_at", "2014-08-10 19:00:29.032209"], ["requested_changes", "{\"title\":\"hai\"}"], ["state", "pending"], ["updated_at", "2014-08-10 19:00:29.032209"]]
+  [1m[36m (0.7ms)[0m  [1mCOMMIT[0m
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36mSQL (0.5ms)[0m  [1mUPDATE "approvable_change_requests" SET "state" = $1, "updated_at" = $2 WHERE "approvable_change_requests"."id" = 2813[0m  [["state", "submitted"], ["updated_at", "2014-08-10 19:00:34.322783"]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35m (0.2ms)[0m  ROLLBACK

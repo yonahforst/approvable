@@ -60,9 +60,6 @@ module Approvable
     end
 
     context '#change_status' do
-      
-      
-    
       it 'delegates change_status to current_change_request' do
         create(:change_request, :approved, approvable: @listing )
         create(:change_request, :submitted, approvable: @listing )
@@ -76,6 +73,26 @@ module Approvable
         create(:change_request, :approved, approvable: @listing )
       
         expect(@listing.change_status).to eq 'approved'
+      end
+    end
+    
+    context '#change_status=' do
+      it 'updates current_change_request state' do
+        @listing.update(title: 'a brand new title')
+        @listing.update(change_status: 'submitted')
+        @listing.reload
+        
+        expect(@listing.change_status).to eq 'submitted'
+      end
+      
+      it 'doesnt transition to invalid state' do
+        @listing.update!(title: 'a brand new title')
+        expect{
+          @listing.update!(change_status: 'accepted')
+        }.to raise_error ActiveRecord::RecordInvalid
+        @listing.reload
+        
+        expect(@listing.change_status).to eq 'pending'
       end
     end
     
@@ -141,10 +158,7 @@ module Approvable
         @listing.reload
       
         expect{
-          @listing.update!(title: 'a brand new title')
-          puts change_request.errors.full_messages.inspect
-          puts @listing.errors.full_messages.inspect
-        
+          @listing.update!(title: 'a brand new title')        
         }.to raise_error ActiveRecord::RecordInvalid
       
         change_request.reload

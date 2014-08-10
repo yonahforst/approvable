@@ -11,7 +11,8 @@ module Approvable
 
         has_many :change_requests, as: :approvable, class_name: 'Approvable::ChangeRequest'
         has_one :current_change_request, -> {where.not(state: 'approved') }, as: :approvable, class_name: 'Approvable::ChangeRequest'
-                
+        
+        validate :changes_are_not_submitted
         alias_method_chain :save, :change_request
         alias_method_chain :save!, :change_request
         accepts_nested_attributes_for :current_change_request, update_only: true
@@ -23,6 +24,10 @@ module Approvable
                
       def change_status
         current_change_request ? current_change_request.state : 'approved'
+      end
+      
+      def change_status= new_status
+        current_change_request.state = new_status
       end
       
       def change_status_notes
@@ -43,8 +48,9 @@ module Approvable
       end
       
       def approve_changes
-        if apply_changes.save_without_change_request
+        transaction do
           current_change_request.approve!
+          apply_changes.save_without_change_request
         end
       end
       
@@ -91,14 +97,30 @@ module Approvable
         self.attributes = self.changed_attributes
       end
       
-      def save_with_change_request
-        move_changes_to_change_request
-        save_without_change_request
+      def save_with_change_request *args, &block
+        if valid?
+          move_changes_to_change_request
+          save_without_change_request *args << {validate: false}, &block
+        else
+          false
+        end
       end
       
-      def save_with_change_request!
-        move_changes_to_change_request
-        save_without_change_request!
+      def save_with_change_request! *args, &block
+        if valid?
+          move_changes_to_change_request
+          save_without_change_request! *args << {validate: false}, &block
+        else
+          raise ActiveRecord::RecordInvalid.new(self)
+        end
+      end
+      
+      def changes_are_not_submitted
+        if change_status == 'submitted'
+          changed_attributes.keys.each do |attribute|
+            errors.add(attribute, 'Cannot make changes once submitted for approval.')
+          end
+        end
       end
       
     end
