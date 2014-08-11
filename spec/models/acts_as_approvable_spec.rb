@@ -157,8 +157,27 @@ module Approvable
           @listing.update(title: 'a brand new title')
         }.to change {@listing.change_requests.count}.by(1)
       end
-    
 
+
+      it 'works with validations' do
+        @listing.title = nil
+        expect{
+          @listing.save
+        }.not_to change {@listing.change_requests.count}
+        
+        expect(@listing.errors).not_to be_empty
+      end
+      
+      it 'accepts validate: false option' do
+        @listing.title = nil
+        
+        expect{
+          @listing.save(validate: false)
+        }.to change {@listing.change_requests.count}.by(1)
+        
+        expect(@listing.errors).to be_empty
+      end
+    
     
       it 'creates a new change request for an approved listing and doesnt change exiting' do
         change_request = create(:change_request, :approved, approvable: @listing )

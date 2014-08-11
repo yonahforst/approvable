@@ -56,8 +56,8 @@ module Approvable
         current_change_request.reject! :rejected, options
       end
       
-      def save *args, &block
-        if valid?
+      def save options={}
+        if options[:validate] == false || valid?(options[:context])
           add_changes_to_change_request
           revert_changed_attributes
           super(validate: false)
