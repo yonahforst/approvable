@@ -282,6 +282,27 @@ module Approvable
         expect(Time.parse(notes.keys.first)).to be_kind_of Time
         expect(notes.values.first).to eq 'i dont like it'        
       end
+      
+      it 'rejects and adds to existing notes' do
+        @listing.update(title: 'a brand new title')
+        @listing.submit_changes
+        @listing.reject_changes(note: 'i dont like it')
+        @listing.update(title: 'something else')
+        @listing.submit_changes
+        sleep 1
+        @listing.reject_changes(note: 'even worse!!')
+        
+        @listing.reload
+      
+        expect(@listing.title).not_to eq 'a brand new title'
+        expect(@listing.title).not_to eq 'something else'
+        expect(@listing.change_status).to eq 'rejected'
+        
+        notes = @listing.change_status_notes
+        expect(notes.count).to eq 2
+        expect(notes.values.first).to eq 'i dont like it'        
+        expect(notes.values.last).to eq 'even worse!!'        
+      end
     end
     
     context '#_with_changes' do
