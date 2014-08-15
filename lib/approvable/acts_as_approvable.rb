@@ -16,10 +16,16 @@ module Approvable
 
         amoeba {enable}
         
-        cattr_accessor :ignored_attrs
+        cattr_accessor :ignored_attrs, :approvable
         self.ignored_attrs = [*options[:except]] + [:id, :created_at, :updated_at]
         self.ignored_attrs = self.attribute_names.map(&:to_sym) - [*options[:only]] if options[:only]
         self.ignored_attrs.map!(&:to_s)
+      end
+      
+      def approvable_associations
+        self.reflect_on_all_associations.select do |a| 
+          [:has_many, :has_one].include?(a.macro) && a.klass.respond_to?(:approvable)
+        end
       end
     end
     
@@ -42,7 +48,15 @@ module Approvable
         change_request.requested_changes.each do |attr_name, value|
           write_attribute attr_name, value, true
         end
+        associated_approvable_records.each(&:apply_changes)
+        
         self
+      end
+      
+      def associated_approvable_records
+        self.class.approvable_associations.inject([]) do |array, associaton|
+          array = array + [*self.send(associaton.name)]
+        end
       end
       
       def preview_changes
@@ -52,21 +66,28 @@ module Approvable
       end
       
       def submit_changes
-        change_request.submit!
-        reload
+        transaction do
+          change_request.submit!
+          associated_approvable_records.each(&:submit_changes)
+          reload
+        end
       end
       
       def unsubmit_changes
-        change_request.unsubmit!
-        reload
+        transaction do
+          change_request.unsubmit!
+          associated_approvable_records.each(&:unsubmit_changes)
+          reload
+        end
       end
       
       def approve_changes
         transaction do
           change_request.approve!
           apply_changes.save!
+          associated_approvable_records.each(&:approve_changes) #each {|a| a.change_request.approve!}
+          reload
         end
-        reload
       end
       
       def reject_changes options = {}

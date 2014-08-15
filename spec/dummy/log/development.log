@@ -687,3 +687,63 @@ Migrating to CreateListings (20140807144654)
   [1m[35mApprovable::ChangeRequest Load (0.5ms)[0m  SELECT  "approvable_change_requests".* FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" = $1 AND "approvable_change_requests"."approvable_type" = $2 AND ("approvable_change_requests"."state" != 'approved') LIMIT 1  [["approvable_id", 335], ["approvable_type", "Listing"]]
   [1m[36mSQL (0.5ms)[0m  [1mUPDATE "approvable_change_requests" SET "requested_changes" = $1, "updated_at" = $2 WHERE "approvable_change_requests"."id" = 416[0m  [["requested_changes", "{\"title\":\"dsfsd\",\"description\":\"another one\"}"], ["updated_at", "2014-08-15 17:43:14.445969"]]
   [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36mActiveRecord::SchemaMigration Load (0.4ms)[0m  [1mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+Migrating to CreateFoos (20140815174643)
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36m (62.3ms)[0m  [1mCREATE TABLE "foos" ("id" serial primary key, "title" character varying(255), "listing_id" integer, "created_at" timestamp, "updated_at" timestamp) [0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20140815174643"]]
+  [1m[36m (38.0ms)[0m  [1mCOMMIT[0m
+Migrating to CreateBars (20140815174653)
+  [1m[35m (15.6ms)[0m  BEGIN
+  [1m[36m (35.5ms)[0m  [1mCREATE TABLE "bars" ("id" serial primary key, "title" character varying(255), "listing_id" integer, "created_at" timestamp, "updated_at" timestamp) [0m
+  [1m[35mSQL (0.4ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20140815174653"]]
+  [1m[36m (19.9ms)[0m  [1mCOMMIT[0m
+  [1m[35mActiveRecord::SchemaMigration Load (0.4ms)[0m  SELECT "schema_migrations".* FROM "schema_migrations"
+  [1m[36mListing Load (0.9ms)[0m  [1mSELECT  "listings".* FROM "listings"   ORDER BY "listings"."id" ASC LIMIT 1[0m
+  [1m[35mListing Load (1.1ms)[0m  SELECT  "listings".* FROM "listings"   ORDER BY "listings"."id" ASC LIMIT 1
+  [1m[36mListing Load (0.7ms)[0m  [1mSELECT  "listings".* FROM "listings"   ORDER BY "listings"."id" ASC LIMIT 1[0m
+  [1m[35mListing Load (0.3ms)[0m  SELECT  "listings".* FROM "listings"   ORDER BY "listings"."id" ASC LIMIT 1
+  [1m[36mListing Load (1.1ms)[0m  [1mSELECT  "listings".* FROM "listings"   ORDER BY "listings"."id" ASC LIMIT 1[0m
+  [1m[35mListing Load (1.1ms)[0m  SELECT  "listings".* FROM "listings"   ORDER BY "listings"."id" ASC LIMIT 1
+  [1m[36mListing Load (0.8ms)[0m  [1mSELECT  "listings".* FROM "listings"   ORDER BY "listings"."id" ASC LIMIT 1[0m
+  [1m[36mListing Load (0.9ms)[0m  [1mSELECT  "listings".* FROM "listings"   ORDER BY "listings"."id" ASC LIMIT 1[0m
+  [1m[36mListing Load (0.8ms)[0m  [1mSELECT  "listings".* FROM "listings"   ORDER BY "listings"."id" ASC LIMIT 1[0m
+  [1m[35mListing Load (0.9ms)[0m  SELECT  "listings".* FROM "listings"   ORDER BY "listings"."id" ASC LIMIT 1
+  [1m[36mListing Load (0.6ms)[0m  [1mSELECT  "listings".* FROM "listings"   ORDER BY "listings"."id" ASC LIMIT 1[0m
+  [1m[36mListing Load (0.9ms)[0m  [1mSELECT  "listings".* FROM "listings"   ORDER BY "listings"."id" ASC LIMIT 1[0m
+  [1m[35mFoo Load (0.4ms)[0m  SELECT  "foos".* FROM "foos"  WHERE "foos"."listing_id" = $1 LIMIT 1  [["listing_id", 335]]
+  [1m[36mBar Load (0.4ms)[0m  [1mSELECT "bars".* FROM "bars"  WHERE "bars"."listing_id" = $1[0m  [["listing_id", 335]]
+  [1m[35mApprovable::ChangeRequest Load (0.5ms)[0m  SELECT "approvable_change_requests".* FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" = $1 AND "approvable_change_requests"."approvable_type" = $2  [["approvable_id", 335], ["approvable_type", "Listing"]]
+  [1m[36mApprovable::ChangeRequest Load (0.3ms)[0m  [1mSELECT  "approvable_change_requests".* FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" = $1 AND "approvable_change_requests"."approvable_type" = $2 AND ("approvable_change_requests"."state" != 'approved') LIMIT 1[0m  [["approvable_id", 335], ["approvable_type", "Listing"]]
+  [1m[35mListing Load (1.3ms)[0m  SELECT  "listings".* FROM "listings"   ORDER BY "listings"."id" ASC LIMIT 1
+  [1m[36mListing Load (0.8ms)[0m  [1mSELECT  "listings".* FROM "listings"   ORDER BY "listings"."id" ASC LIMIT 1[0m
+  [1m[35mListing Load (0.8ms)[0m  SELECT  "listings".* FROM "listings"   ORDER BY "listings"."id" ASC LIMIT 1
+  [1m[36mListing Load (0.8ms)[0m  [1mSELECT  "listings".* FROM "listings"   ORDER BY "listings"."id" ASC LIMIT 1[0m
+  [1m[35mListing Load (0.8ms)[0m  SELECT  "listings".* FROM "listings"   ORDER BY "listings"."id" ASC LIMIT 1
+  [1m[36mListing Load (0.7ms)[0m  [1mSELECT  "listings".* FROM "listings"   ORDER BY "listings"."id" ASC LIMIT 1[0m
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36m (0.8ms)[0m  [1mSELECT COUNT(*) FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" IS NULL AND ("approvable_change_requests"."state" != 'approved')[0m
+  [1m[35mSQL (0.5ms)[0m  INSERT INTO "bars" ("created_at", "updated_at") VALUES ($1, $2) RETURNING "id"  [["created_at", "2014-08-15 18:20:32.811794"], ["updated_at", "2014-08-15 18:20:32.811794"]]
+  [1m[36mSQL (0.5ms)[0m  [1mINSERT INTO "approvable_change_requests" ("approvable_id", "approvable_type", "created_at", "requested_changes", "state", "updated_at") VALUES ($1, $2, $3, $4, $5, $6) RETURNING "id"[0m  [["approvable_id", 9], ["approvable_type", "Bar"], ["created_at", "2014-08-15 18:20:32.816227"], ["requested_changes", "{\"listing_id\":335}"], ["state", "pending"], ["updated_at", "2014-08-15 18:20:32.816227"]]
+  [1m[35m (81.1ms)[0m  COMMIT
+  [1m[36mListing Load (0.7ms)[0m  [1mSELECT  "listings".* FROM "listings"   ORDER BY "listings"."id" ASC LIMIT 1[0m
+  [1m[35mListing Load (0.7ms)[0m  SELECT  "listings".* FROM "listings"   ORDER BY "listings"."id" ASC LIMIT 1
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35m (0.6ms)[0m  SELECT COUNT(*) FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" IS NULL AND ("approvable_change_requests"."state" != 'approved')
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "bars" ("created_at", "updated_at") VALUES ($1, $2) RETURNING "id"[0m  [["created_at", "2014-08-15 18:26:28.042920"], ["updated_at", "2014-08-15 18:26:28.042920"]]
+  [1m[35mSQL (0.4ms)[0m  INSERT INTO "approvable_change_requests" ("approvable_id", "approvable_type", "created_at", "requested_changes", "state", "updated_at") VALUES ($1, $2, $3, $4, $5, $6) RETURNING "id"  [["approvable_id", 12], ["approvable_type", "Bar"], ["created_at", "2014-08-15 18:26:28.044501"], ["requested_changes", "{\"listing_id\":335}"], ["state", "pending"], ["updated_at", "2014-08-15 18:26:28.044501"]]
+  [1m[36m (15.7ms)[0m  [1mCOMMIT[0m
+  [1m[36mListing Load (0.7ms)[0m  [1mSELECT  "listings".* FROM "listings"   ORDER BY "listings"."id" ASC LIMIT 1[0m
+  [1m[35m (0.1ms)[0m  BEGIN
+  [1m[36mSQL (0.5ms)[0m  [1mINSERT INTO "bars" ("created_at", "listing_id", "updated_at") VALUES ($1, $2, $3) RETURNING "id"[0m  [["created_at", "2014-08-15 18:26:42.477959"], ["listing_id", 335], ["updated_at", "2014-08-15 18:26:42.477959"]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36mListing Load (0.7ms)[0m  [1mSELECT  "listings".* FROM "listings"   ORDER BY "listings"."id" ASC LIMIT 1[0m
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36mApprovable::ChangeRequest Load (0.5ms)[0m  [1mSELECT  "approvable_change_requests".* FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" = $1 AND "approvable_change_requests"."approvable_type" = $2 AND ("approvable_change_requests"."state" != 'approved') LIMIT 1[0m  [["approvable_id", 335], ["approvable_type", "Listing"]]
+  [1m[35m (0.2ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.4ms)[0m  [1mUPDATE "approvable_change_requests" SET "state" = $1, "updated_at" = $2 WHERE "approvable_change_requests"."id" = 416[0m  [["state", "submitted"], ["updated_at", "2014-08-15 18:26:59.926068"]]
+  [1m[35m (0.1ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36mListing Load (0.3ms)[0m  [1mSELECT  "listings".* FROM "listings"  WHERE "listings"."id" = $1 LIMIT 1[0m  [["id", 335]]
+  [1m[35m (0.6ms)[0m  COMMIT
+  [1m[36mListing Load (0.7ms)[0m  [1mSELECT  "listings".* FROM "listings"  WHERE "listings"."id" = $1 LIMIT 1[0m  [["id", 335]]
+  [1m[36mListing Load (0.8ms)[0m  [1mSELECT  "listings".* FROM "listings"   ORDER BY "listings"."id" ASC LIMIT 1[0m

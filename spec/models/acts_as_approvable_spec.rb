@@ -96,11 +96,44 @@ module Approvable
       end
 
       it 'applies changes to has_one relation ships' do
-        pending
+        foo = create(:foo, listing: @listing)
+        @listing.foo.title = 'bar'
+        
+        @listing.save
+        @listing.submit_changes
+        foo.reload
+        
+        expect(foo.change_status).to eq 'submitted'
+        
+        @listing.approve_changes
+        foo.reload
+        
+        expect(foo.change_status).to eq 'approved'
+        expect(foo.title).to eq 'bar'
+        
       end
 
       it 'applies changes to has_many relationships' do
-        pending
+        bar1 = create(:bar, listing: @listing)
+        bar2 = create(:bar, listing: @listing)
+        @listing.bars.each {|b| b.title = 'foo'}
+        
+        @listing.save
+        @listing.submit_changes
+        bar1.reload
+        bar2.reload
+        
+        expect(bar1.change_status).to eq 'submitted'
+        expect(bar2.change_status).to eq 'submitted'
+        
+        @listing.approve_changes
+        bar1.reload
+        bar2.reload
+        
+        expect(bar1.change_status).to eq 'approved'
+        expect(bar2.change_status).to eq 'approved'
+        expect(bar1.title).to eq 'foo'
+        expect(bar2.title).to eq 'foo'
       end
     end
 
