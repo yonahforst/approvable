@@ -19,13 +19,13 @@ ActiveRecord::Schema.define(version: 20140809183112) do
   create_table "approvable_change_requests", force: true do |t|
     t.string   "approvable_type"
     t.integer  "approvable_id"
-    t.json     "requested_changes"
+    t.json     "requested_changes", default: {}
     t.string   "state"
     t.string   "approver_type"
     t.integer  "approver_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.json     "notes"
+    t.json     "notes",             default: {}
   end
 
   create_table "listings", force: true do |t|

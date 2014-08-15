@@ -3,7 +3,7 @@ require 'rails_helper'
 module Approvable
   describe ChangeRequest, :type => :model do
     
-    before {@request = create(:change_request)}
+    before(:each) {@request = create(:change_request)}
     
     
     it 'creates a change request as pending' do

@@ -4,6 +4,10 @@ FactoryGirl.define do
     sequence(:description) {|n| "A long description #{n}"}
     
     trait :approved do
+      after(:create) do |listing|
+        listing.submit_changes
+        listing.approve_changes
+      end
     end
     
   end

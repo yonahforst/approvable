@@ -42,7 +42,7 @@ module Approvable
     
     def transition_options(options = {})
       note = options[:note] if options
-      self.notes ||= {}
+      self.notes_will_change! if note
       self.notes[Time.now.to_s] = note if note      
     end
     
@@ -57,7 +57,7 @@ module Approvable
     def no_outstanding_change_requests
       if self.class.where(approvable: approvable).unapproved.any?
         errors.add(:base, 'please use the existing change request')
-      end  
+      end
     end
     
     def update_rejected_to_pending

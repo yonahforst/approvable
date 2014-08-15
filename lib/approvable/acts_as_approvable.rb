@@ -9,14 +9,15 @@ module Approvable
       def acts_as_approvable **options
         include Approvable::ActsAsApprovable::LocalInstanceMethods
 
-        has_many :change_requests, as: :approvable, class_name: 'Approvable::ChangeRequest'
-        has_one :current_change_request, -> {where.not(state: 'approved') }, as: :approvable, class_name: 'Approvable::ChangeRequest'
-        
+        has_many :change_requests, as: :approvable, class_name: 'Approvable::ChangeRequest', dependent: :destroy
+        has_one :current_change_request, -> {where.not(state: 'approved') }, as: :approvable, class_name: 'Approvable::ChangeRequest', autosave: true
+
         validate :changes_are_not_submitted
-        accepts_nested_attributes_for :current_change_request, update_only: true
+
+        amoeba {enable}
         
         cattr_accessor :ignored_attrs
-        self.ignored_attrs = [*options[:except]]
+        self.ignored_attrs = [*options[:except]] + [:id, :created_at, :updated_at]
         self.ignored_attrs = self.attribute_names.map(&:to_sym) - [*options[:only]] if options[:only]
         self.ignored_attrs.map!(&:to_s)
       end
@@ -24,46 +25,74 @@ module Approvable
     
     module LocalInstanceMethods
                
+      def requested_changes
+        current_change_request.try(:requested_changes) || {}
+      end
+      
+      # use current_change_request here so that we dont get pending from a newly built change_request
       def change_status
         current_change_request ? current_change_request.state : 'approved'
       end
 
       def change_status_notes
-        current_change_request.notes if current_change_request
+        change_request.notes
       end
             
       def apply_changes
-        self.attributes = current_change_request.requested_changes || {} if current_change_request
+        change_request.requested_changes.each do |attr_name, value|
+          write_attribute attr_name, value, true
+        end
         self
       end
       
+      def preview_changes
+        dup = self.amoeba_dup
+        dup.apply_changes.readonly!
+        dup
+      end
+      
       def submit_changes
-        current_change_request.submit!
+        change_request.submit!
+        reload
       end
       
       def unsubmit_changes
-        current_change_request.unsubmit!
+        change_request.unsubmit!
+        reload
       end
       
       def approve_changes
         transaction do
-          current_change_request.approve!
+          change_request.approve!
           apply_changes.save!
         end
+        reload
       end
       
       def reject_changes options = {}
-        current_change_request.reject! :rejected, options
+        change_request.reject! :rejected, options
+        reload
       end
       
       def save options={}
         if options[:validate] == false || valid?(options[:context])
-          add_changes_to_change_request
           revert_changed_attributes
           super(validate: false)
         else
           false
         end
+      end
+      
+      def change_request
+        current_change_request || build_current_change_request
+      end
+      
+      def write_attribute attr_name, value, force = false
+        unless force || self.class.ignored_attrs.include?(attr_name) 
+          change_request.requested_changes_will_change!
+          change_request.requested_changes[attr_name.to_s] = value
+        end
+        super attr_name, value
       end
       
       private
@@ -87,25 +116,27 @@ module Approvable
         end
       end
 
-      def existing_changes
-        current_change_request.try(:requested_changes) || {}
-      end
-      
-      def new_changes
-        self.attributes.select {|k,v| changed_attributes.keys.include? k}
-      end
-        
-      def all_changes
-        existing_changes.merge new_changes
-      end
-      
-      def add_changes_to_change_request
-        approvable_changes =  all_changes.except(*self.class.ignored_attrs)
-        self.current_change_request_attributes = {requested_changes: approvable_changes} if approvable_changes.any?
-      end
+      # def existing_changes
+      #   current_change_request.try(:requested_changes) || {}
+      # end
+      #
+      # def new_changes
+      #   self.attributes.select {|k,v| changed_attributes.keys.include? k}
+      # end
+      #
+      # def all_changes
+      #   existing_changes.merge new_changes
+      # end
+      #
+      # def add_changes_to_change_request
+      #   approvable_changes =  all_changes.except(*self.class.ignored_attrs)
+      #   self.current_change_request_attributes = {requested_changes: approvable_changes} if approvable_changes.any?
+      # end
       
       def revert_changed_attributes
-        self.attributes = changed_attributes.except(*self.class.ignored_attrs)
+        changed_attributes.except(*self.class.ignored_attrs).each do |attr_name, value|
+          write_attribute attr_name, value, true
+        end
       end
       
       def changes_are_not_submitted

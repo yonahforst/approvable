@@ -1,5 +1,6 @@
 require 'approvable/acts_as_approvable'
 require 'aasm'
+require 'amoeba'
 
 module Approvable
   class Engine < ::Rails::Engine

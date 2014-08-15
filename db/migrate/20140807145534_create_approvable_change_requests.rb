@@ -3,7 +3,7 @@ class CreateApprovableChangeRequests < ActiveRecord::Migration
     create_table :approvable_change_requests do |t|
       t.string :approvable_type
       t.integer :approvable_id
-      t.json :requested_changes
+      t.json :requested_changes, default: {}
       t.string :state
       t.string :approver_type
       t.integer :approver_id
