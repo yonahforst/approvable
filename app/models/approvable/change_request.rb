@@ -1,10 +1,10 @@
 module Approvable
   class ChangeRequest < ActiveRecord::Base
-    belongs_to :approvable, :dependent => :destroy, :polymorphic => true
+    belongs_to :approvable, :polymorphic => true
     belongs_to :approver, :polymorphic => true
 
-    validate :no_outstanding_change_requests, on: :create
-    validate :not_submitted_or_approved, if: :requested_changes_changed?
+    # validate :no_outstanding_change_requests, on: :create
+    # validate :not_submitted_or_approved, if: :requested_changes_changed?
 
     after_save :update_rejected_to_pending, if: :requested_changes_changed?
     
@@ -43,22 +43,23 @@ module Approvable
     def transition_options(options = {})
       note = options[:note] if options
       self.notes_will_change! if note
+      self.notes ||= {}
       self.notes[Time.now.to_s] = note if note      
     end
     
     private
     
-    def not_submitted_or_approved
-      if ['approved', 'submitted'].include? state_was
-        errors.add(:base, "cannot change a #{state} request")
-      end
-    end
-    
-    def no_outstanding_change_requests
-      if self.class.where(approvable: approvable).unapproved.any?
-        errors.add(:base, 'please use the existing change request')
-      end
-    end
+    # def not_submitted_or_approved
+    #   if ['approved', 'submitted'].include? state_was
+    #     errors.add(:base, "cannot change a #{state} request")
+    #   end
+    # end
+    #
+    # def no_outstanding_change_requests
+    #   if self.class.where(approvable: approvable).unapproved.any?
+    #     errors.add(:base, 'please use the existing change request')
+    #   end
+    # end
     
     def update_rejected_to_pending
       if rejected?

@@ -747,3 +747,351 @@ Migrating to CreateBars (20140815174653)
   [1m[35m (0.6ms)[0m  COMMIT
   [1m[36mListing Load (0.7ms)[0m  [1mSELECT  "listings".* FROM "listings"  WHERE "listings"."id" = $1 LIMIT 1[0m  [["id", 335]]
   [1m[36mListing Load (0.8ms)[0m  [1mSELECT  "listings".* FROM "listings"   ORDER BY "listings"."id" ASC LIMIT 1[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.9ms)[0m  [1mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+Migrating to CreateFoobars (20140816143802)
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36m (35.6ms)[0m  [1mCREATE TABLE "foobars" ("id" serial primary key, "json_hash" json, "created_at" timestamp, "updated_at" timestamp) [0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO "schema_migrations" ("version") VALUES ($1)  [["version", "20140816143802"]]
+  [1m[36m (22.7ms)[0m  [1mCOMMIT[0m
+  [1m[35mActiveRecord::SchemaMigration Load (0.3ms)[0m  SELECT "schema_migrations".* FROM "schema_migrations"
+  [1m[36mListing Load (0.8ms)[0m  [1mSELECT  "listings".* FROM "listings"   ORDER BY "listings"."id" ASC LIMIT 1[0m
+  [1m[35m (0.5ms)[0m  BEGIN
+  [1m[36mApprovable::ChangeRequest Load (0.7ms)[0m  [1mSELECT  "approvable_change_requests".* FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" = $1 AND "approvable_change_requests"."approvable_type" = $2 AND ("approvable_change_requests"."state" != 'approved') LIMIT 1[0m  [["approvable_id", 335], ["approvable_type", "Listing"]]
+  [1m[35m (0.5ms)[0m  ROLLBACK
+  [1m[36m (0.4ms)[0m  [1mBEGIN[0m
+  [1m[35m (0.2ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.8ms)[0m  [1mUPDATE "approvable_change_requests" SET "state" = $1, "updated_at" = $2 WHERE "approvable_change_requests"."id" = 416[0m  [["state", "pending"], ["updated_at", "2014-08-17 12:06:29.617443"]]
+  [1m[35m (0.2ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36mFoo Load (0.3ms)[0m  [1mSELECT  "foos".* FROM "foos"  WHERE "foos"."listing_id" = $1 LIMIT 1[0m  [["listing_id", 335]]
+  [1m[35mBar Load (0.4ms)[0m  SELECT "bars".* FROM "bars"  WHERE "bars"."listing_id" = $1  [["listing_id", 335]]
+  [1m[36mApprovable::ChangeRequest Load (0.6ms)[0m  [1mSELECT  "approvable_change_requests".* FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" = $1 AND "approvable_change_requests"."approvable_type" = $2 AND ("approvable_change_requests"."state" != 'approved') LIMIT 1[0m  [["approvable_id", 13], ["approvable_type", "Bar"]]
+  [1m[35mBar Load (0.3ms)[0m  SELECT  "bars".* FROM "bars"  WHERE "bars"."id" = $1 LIMIT 1  [["id", 13]]
+  [1m[36mListing Load (0.5ms)[0m  [1mSELECT  "listings".* FROM "listings"  WHERE "listings"."id" = $1 LIMIT 1[0m  [["id", 335]]
+  [1m[35m (1.3ms)[0m  COMMIT
+  [1m[36m (0.4ms)[0m  [1mBEGIN[0m
+  [1m[35mApprovable::ChangeRequest Load (0.6ms)[0m  SELECT  "approvable_change_requests".* FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" = $1 AND "approvable_change_requests"."approvable_type" = $2 AND ("approvable_change_requests"."state" != 'approved') LIMIT 1  [["approvable_id", 335], ["approvable_type", "Listing"]]
+  [1m[36mSQL (0.5ms)[0m  [1mUPDATE "listings" SET "title" = $1, "updated_at" = $2 WHERE "listings"."id" = 335[0m  [["title", "old"], ["updated_at", "2014-08-17 12:06:35.564267"]]
+  [1m[35mSQL (0.3ms)[0m  UPDATE "approvable_change_requests" SET "requested_changes" = $1, "updated_at" = $2 WHERE "approvable_change_requests"."id" = 416  [["requested_changes", "{\"title\":\"old\",\"description\":\"another one\"}"], ["updated_at", "2014-08-17 12:06:35.566987"]]
+  [1m[36m (0.5ms)[0m  [1mCOMMIT[0m
+  [1m[35mListing Load (1.0ms)[0m  SELECT  "listings".* FROM "listings"  WHERE "listings"."id" = $1 LIMIT 1  [["id", 335]]
+  [1m[36mListing Load (0.8ms)[0m  [1mSELECT  "listings".* FROM "listings"   ORDER BY "listings"."id" ASC LIMIT 1[0m
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36mApprovable::ChangeRequest Load (0.5ms)[0m  [1mSELECT  "approvable_change_requests".* FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" = $1 AND "approvable_change_requests"."approvable_type" = $2 AND ("approvable_change_requests"."state" != 'approved') LIMIT 1[0m  [["approvable_id", 335], ["approvable_type", "Listing"]]
+  [1m[35mSQL (0.3ms)[0m  UPDATE "listings" SET "title" = $1, "updated_at" = $2 WHERE "listings"."id" = 335  [["title", "new"], ["updated_at", "2014-08-17 12:07:57.109541"]]
+  [1m[36mSQL (0.3ms)[0m  [1mUPDATE "approvable_change_requests" SET "requested_changes" = $1, "updated_at" = $2 WHERE "approvable_change_requests"."id" = 416[0m  [["requested_changes", "{\"title\":\"new\",\"description\":\"another one\"}"], ["updated_at", "2014-08-17 12:07:57.111805"]]
+  [1m[35m (0.6ms)[0m  COMMIT
+  [1m[36mListing Load (0.7ms)[0m  [1mSELECT  "listings".* FROM "listings"   ORDER BY "listings"."id" ASC LIMIT 1[0m
+  [1m[35m (0.4ms)[0m  BEGIN
+  [1m[36mApprovable::ChangeRequest Load (1.0ms)[0m  [1mSELECT  "approvable_change_requests".* FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" = $1 AND "approvable_change_requests"."approvable_type" = $2 AND ("approvable_change_requests"."state" != 'approved') LIMIT 1[0m  [["approvable_id", 335], ["approvable_type", "Listing"]]
+  [1m[35mSQL (0.4ms)[0m  UPDATE "listings" SET "title" = $1, "updated_at" = $2 WHERE "listings"."id" = 335  [["title", "old"], ["updated_at", "2014-08-17 12:14:17.860183"]]
+  [1m[36mSQL (0.3ms)[0m  [1mUPDATE "approvable_change_requests" SET "requested_changes" = $1, "updated_at" = $2 WHERE "approvable_change_requests"."id" = 416[0m  [["requested_changes", "{\"title\":\"old\",\"description\":\"another one\"}"], ["updated_at", "2014-08-17 12:14:17.862764"]]
+  [1m[35m (0.7ms)[0m  COMMIT
+  [1m[36mListing Load (1.1ms)[0m  [1mSELECT  "listings".* FROM "listings"   ORDER BY "listings"."id" ASC LIMIT 1[0m
+  [1m[35m (0.4ms)[0m  BEGIN
+  [1m[36mApprovable::ChangeRequest Load (0.8ms)[0m  [1mSELECT  "approvable_change_requests".* FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" = $1 AND "approvable_change_requests"."approvable_type" = $2 AND ("approvable_change_requests"."state" != 'approved') LIMIT 1[0m  [["approvable_id", 335], ["approvable_type", "Listing"]]
+  [1m[35m (0.3ms)[0m  ROLLBACK
+  [1m[36mListing Load (1.1ms)[0m  [1mSELECT  "listings".* FROM "listings"   ORDER BY "listings"."id" ASC LIMIT 1[0m
+  [1m[35m (0.4ms)[0m  BEGIN
+  [1m[36mApprovable::ChangeRequest Load (0.8ms)[0m  [1mSELECT  "approvable_change_requests".* FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" = $1 AND "approvable_change_requests"."approvable_type" = $2 AND ("approvable_change_requests"."state" != 'approved') LIMIT 1[0m  [["approvable_id", 335], ["approvable_type", "Listing"]]
+  [1m[35mSQL (0.3ms)[0m  UPDATE "listings" SET "title" = $1, "updated_at" = $2 WHERE "listings"."id" = 335  [["title", "new"], ["updated_at", "2014-08-17 12:15:29.865129"]]
+  [1m[36mSQL (0.3ms)[0m  [1mUPDATE "approvable_change_requests" SET "requested_changes" = $1, "updated_at" = $2 WHERE "approvable_change_requests"."id" = 416[0m  [["requested_changes", "{\"title\":\"new\",\"description\":\"another one\"}"], ["updated_at", "2014-08-17 12:15:29.867259"]]
+  [1m[35mSQL (0.2ms)[0m  UPDATE "listings" SET "title" = 'old' WHERE "listings"."id" = 335
+  [1m[36m (0.6ms)[0m  [1mCOMMIT[0m
+  [1m[35mListing Load (0.4ms)[0m  SELECT  "listings".* FROM "listings"  WHERE "listings"."id" = $1 LIMIT 1  [["id", 335]]
+  [1m[36mApprovable::ChangeRequest Load (0.6ms)[0m  [1mSELECT  "approvable_change_requests".* FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" = $1 AND "approvable_change_requests"."approvable_type" = $2 AND ("approvable_change_requests"."state" != 'approved') LIMIT 1[0m  [["approvable_id", 335], ["approvable_type", "Listing"]]
+  [1m[35mFoo Load (0.3ms)[0m  SELECT  "foos".* FROM "foos"  WHERE "foos"."listing_id" = $1 LIMIT 1  [["listing_id", 335]]
+  [1m[36mBar Load (0.3ms)[0m  [1mSELECT "bars".* FROM "bars"  WHERE "bars"."listing_id" = $1[0m  [["listing_id", 335]]
+  [1m[35mApprovable::ChangeRequest Load (0.3ms)[0m  SELECT  "approvable_change_requests".* FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" = $1 AND "approvable_change_requests"."approvable_type" = $2 AND ("approvable_change_requests"."state" != 'approved') LIMIT 1  [["approvable_id", 13], ["approvable_type", "Bar"]]
+  [1m[36mListing Load (0.9ms)[0m  [1mSELECT  "listings".* FROM "listings"  WHERE "listings"."id" = $1 LIMIT 1[0m  [["id", 335]]
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36mApprovable::ChangeRequest Load (0.8ms)[0m  [1mSELECT  "approvable_change_requests".* FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" = $1 AND "approvable_change_requests"."approvable_type" = $2 AND ("approvable_change_requests"."state" != 'approved') LIMIT 1[0m  [["approvable_id", 335], ["approvable_type", "Listing"]]
+  [1m[35m (0.3ms)[0m  COMMIT
+  [1m[36mFoo Load (0.6ms)[0m  [1mSELECT  "foos".* FROM "foos"  WHERE "foos"."listing_id" = $1 LIMIT 1[0m  [["listing_id", 335]]
+  [1m[35mBar Load (0.4ms)[0m  SELECT "bars".* FROM "bars"  WHERE "bars"."listing_id" = $1  [["listing_id", 335]]
+  [1m[36mApprovable::ChangeRequest Load (0.5ms)[0m  [1mSELECT  "approvable_change_requests".* FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" = $1 AND "approvable_change_requests"."approvable_type" = $2 AND ("approvable_change_requests"."state" != 'approved') LIMIT 1[0m  [["approvable_id", 13], ["approvable_type", "Bar"]]
+  [1m[36mListing Load (0.8ms)[0m  [1mSELECT  "listings".* FROM "listings"   ORDER BY "listings"."id" ASC LIMIT 1[0m
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36mApprovable::ChangeRequest Load (0.7ms)[0m  [1mSELECT  "approvable_change_requests".* FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" = $1 AND "approvable_change_requests"."approvable_type" = $2 AND ("approvable_change_requests"."state" != 'approved') LIMIT 1[0m  [["approvable_id", 335], ["approvable_type", "Listing"]]
+  [1m[35mSQL (0.4ms)[0m  UPDATE "listings" SET "title" = $1, "updated_at" = $2 WHERE "listings"."id" = 335  [["title", "a brand new title"], ["updated_at", "2014-08-17 12:25:22.624919"]]
+  [1m[36mSQL (0.3ms)[0m  [1mUPDATE "listings" SET "title" = 'old' WHERE "listings"."id" = 335[0m
+  [1m[35m (0.6ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35m (0.1ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.4ms)[0m  [1mUPDATE "approvable_change_requests" SET "state" = $1, "updated_at" = $2 WHERE "approvable_change_requests"."id" = 416[0m  [["state", "submitted"], ["updated_at", "2014-08-17 12:25:32.099765"]]
+  [1m[35m (0.1ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36mFoo Load (0.3ms)[0m  [1mSELECT  "foos".* FROM "foos"  WHERE "foos"."listing_id" = $1 LIMIT 1[0m  [["listing_id", 335]]
+  [1m[35mBar Load (0.3ms)[0m  SELECT "bars".* FROM "bars"  WHERE "bars"."listing_id" = $1  [["listing_id", 335]]
+  [1m[36mApprovable::ChangeRequest Load (0.7ms)[0m  [1mSELECT  "approvable_change_requests".* FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" = $1 AND "approvable_change_requests"."approvable_type" = $2 AND ("approvable_change_requests"."state" != 'approved') LIMIT 1[0m  [["approvable_id", 13], ["approvable_type", "Bar"]]
+  [1m[35mBar Load (0.3ms)[0m  SELECT  "bars".* FROM "bars"  WHERE "bars"."id" = $1 LIMIT 1  [["id", 13]]
+  [1m[36mListing Load (0.3ms)[0m  [1mSELECT  "listings".* FROM "listings"  WHERE "listings"."id" = $1 LIMIT 1[0m  [["id", 335]]
+  [1m[35m (0.6ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mApprovable::ChangeRequest Load (0.5ms)[0m  SELECT  "approvable_change_requests".* FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" = $1 AND "approvable_change_requests"."approvable_type" = $2 AND ("approvable_change_requests"."state" != 'approved') LIMIT 1  [["approvable_id", 335], ["approvable_type", "Listing"]]
+  [1m[36m (0.2ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.4ms)[0m  UPDATE "approvable_change_requests" SET "state" = $1, "updated_at" = $2 WHERE "approvable_change_requests"."id" = 416  [["state", "approved"], ["updated_at", "2014-08-17 12:25:35.941817"]]
+  [1m[36m (0.1ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35mFoo Load (0.3ms)[0m  SELECT  "foos".* FROM "foos"  WHERE "foos"."listing_id" = $1 LIMIT 1  [["listing_id", 335]]
+  [1m[36mBar Load (0.3ms)[0m  [1mSELECT "bars".* FROM "bars"  WHERE "bars"."listing_id" = $1[0m  [["listing_id", 335]]
+  [1m[35mApprovable::ChangeRequest Load (0.3ms)[0m  SELECT  "approvable_change_requests".* FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" = $1 AND "approvable_change_requests"."approvable_type" = $2 AND ("approvable_change_requests"."state" != 'approved') LIMIT 1  [["approvable_id", 13], ["approvable_type", "Bar"]]
+  [1m[36mSQL (0.2ms)[0m  [1mUPDATE "listings" SET "description" = $1, "title" = $2, "updated_at" = $3 WHERE "listings"."id" = 335[0m  [["description", "another one"], ["title", "new"], ["updated_at", "2014-08-17 12:25:35.949072"]]
+  [1m[35mSQL (0.2ms)[0m  UPDATE "listings" SET "title" = 'old', "description" = NULL WHERE "listings"."id" = 335
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO "approvable_change_requests" ("approvable_id", "approvable_type", "created_at", "state", "updated_at") VALUES ($1, $2, $3, $4, $5) RETURNING "id"[0m  [["approvable_id", 13], ["approvable_type", "Bar"], ["created_at", "2014-08-17 12:25:35.952354"], ["state", "pending"], ["updated_at", "2014-08-17 12:25:35.952354"]]
+  [1m[35mBar Load (0.2ms)[0m  SELECT  "bars".* FROM "bars"  WHERE "bars"."id" = $1 LIMIT 1  [["id", 13]]
+  [1m[36mListing Load (0.2ms)[0m  [1mSELECT  "listings".* FROM "listings"  WHERE "listings"."id" = $1 LIMIT 1[0m  [["id", 335]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36mListing Load (0.7ms)[0m  [1mSELECT  "listings".* FROM "listings"   ORDER BY "listings"."id" ASC LIMIT 1[0m
+  [1m[35m (0.4ms)[0m  BEGIN
+  [1m[36mApprovable::ChangeRequest Load (0.8ms)[0m  [1mSELECT  "approvable_change_requests".* FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" = $1 AND "approvable_change_requests"."approvable_type" = $2 AND ("approvable_change_requests"."state" != 'approved') LIMIT 1[0m  [["approvable_id", 335], ["approvable_type", "Listing"]]
+  [1m[35mSQL (0.3ms)[0m  UPDATE "listings" SET "title" = $1, "updated_at" = $2 WHERE "listings"."id" = 335  [["title", "a brand new title"], ["updated_at", "2014-08-17 12:29:09.176337"]]
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO "approvable_change_requests" ("approvable_id", "approvable_type", "created_at", "requested_changes", "state", "updated_at") VALUES ($1, $2, $3, $4, $5, $6) RETURNING "id"[0m  [["approvable_id", 335], ["approvable_type", "Listing"], ["created_at", "2014-08-17 12:29:09.178606"], ["requested_changes", "{\"title\":\"a brand new title\"}"], ["state", "pending"], ["updated_at", "2014-08-17 12:29:09.178606"]]
+  [1m[35mSQL (0.4ms)[0m  UPDATE "listings" SET "title" = 'old' WHERE "listings"."id" = 335
+  [1m[36m (0.6ms)[0m  [1mCOMMIT[0m
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36m (0.3ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.5ms)[0m  UPDATE "approvable_change_requests" SET "state" = $1, "updated_at" = $2 WHERE "approvable_change_requests"."id" = 7745  [["state", "submitted"], ["updated_at", "2014-08-17 12:29:13.650564"]]
+  [1m[36m (0.2ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35mFoo Load (0.3ms)[0m  SELECT  "foos".* FROM "foos"  WHERE "foos"."listing_id" = $1 LIMIT 1  [["listing_id", 335]]
+  [1m[36mBar Load (0.3ms)[0m  [1mSELECT "bars".* FROM "bars"  WHERE "bars"."listing_id" = $1[0m  [["listing_id", 335]]
+  [1m[35mApprovable::ChangeRequest Load (0.3ms)[0m  SELECT  "approvable_change_requests".* FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" = $1 AND "approvable_change_requests"."approvable_type" = $2 AND ("approvable_change_requests"."state" != 'approved') LIMIT 1  [["approvable_id", 13], ["approvable_type", "Bar"]]
+  [1m[36m (0.1ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.3ms)[0m  UPDATE "approvable_change_requests" SET "state" = $1, "updated_at" = $2 WHERE "approvable_change_requests"."id" = 7744  [["state", "submitted"], ["updated_at", "2014-08-17 12:29:13.678578"]]
+  [1m[36m (0.1ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35mBar Load (0.5ms)[0m  SELECT  "bars".* FROM "bars"  WHERE "bars"."id" = $1 LIMIT 1  [["id", 13]]
+  [1m[36mListing Load (0.2ms)[0m  [1mSELECT  "listings".* FROM "listings"  WHERE "listings"."id" = $1 LIMIT 1[0m  [["id", 335]]
+  [1m[35m (0.7ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mApprovable::ChangeRequest Load (0.5ms)[0m  SELECT  "approvable_change_requests".* FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" = $1 AND "approvable_change_requests"."approvable_type" = $2 AND ("approvable_change_requests"."state" != 'approved') LIMIT 1  [["approvable_id", 335], ["approvable_type", "Listing"]]
+  [1m[36m (0.3ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.5ms)[0m  UPDATE "approvable_change_requests" SET "state" = $1, "updated_at" = $2 WHERE "approvable_change_requests"."id" = 7745  [["state", "approved"], ["updated_at", "2014-08-17 12:29:16.685532"]]
+  [1m[36m (0.2ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35mFoo Load (0.3ms)[0m  SELECT  "foos".* FROM "foos"  WHERE "foos"."listing_id" = $1 LIMIT 1  [["listing_id", 335]]
+  [1m[36mBar Load (0.2ms)[0m  [1mSELECT "bars".* FROM "bars"  WHERE "bars"."listing_id" = $1[0m  [["listing_id", 335]]
+  [1m[35mApprovable::ChangeRequest Load (0.3ms)[0m  SELECT  "approvable_change_requests".* FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" = $1 AND "approvable_change_requests"."approvable_type" = $2 AND ("approvable_change_requests"."state" != 'approved') LIMIT 1  [["approvable_id", 13], ["approvable_type", "Bar"]]
+  [1m[36mSQL (0.3ms)[0m  [1mUPDATE "listings" SET "title" = $1, "updated_at" = $2 WHERE "listings"."id" = 335[0m  [["title", "a brand new title"], ["updated_at", "2014-08-17 12:29:16.692780"]]
+  [1m[35m (0.1ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.3ms)[0m  [1mUPDATE "approvable_change_requests" SET "state" = $1, "updated_at" = $2 WHERE "approvable_change_requests"."id" = 7744[0m  [["state", "approved"], ["updated_at", "2014-08-17 12:29:16.694497"]]
+  [1m[35m (0.1ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36mBar Load (0.3ms)[0m  [1mSELECT  "bars".* FROM "bars"  WHERE "bars"."id" = $1 LIMIT 1[0m  [["id", 13]]
+  [1m[35mListing Load (0.4ms)[0m  SELECT  "listings".* FROM "listings"  WHERE "listings"."id" = $1 LIMIT 1  [["id", 335]]
+  [1m[36m (0.5ms)[0m  [1mCOMMIT[0m
+  [1m[35mListing Load (0.5ms)[0m  SELECT  "listings".* FROM "listings"  WHERE "listings"."id" = $1 LIMIT 1  [["id", 335]]
+  [1m[36mListing Load (16.5ms)[0m  [1mSELECT  "listings".* FROM "listings"   ORDER BY "listings"."id" DESC LIMIT 1[0m
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36mApprovable::ChangeRequest Load (0.6ms)[0m  [1mSELECT  "approvable_change_requests".* FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" = $1 AND "approvable_change_requests"."approvable_type" = $2 AND ("approvable_change_requests"."state" != 'approved') LIMIT 1[0m  [["approvable_id", 335], ["approvable_type", "Listing"]]
+  [1m[35mSQL (0.4ms)[0m  UPDATE "listings" SET "description" = $1, "title" = $2, "updated_at" = $3 WHERE "listings"."id" = 335  [["description", "another one"], ["title", "blah blah"], ["updated_at", "2014-08-17 21:30:03.514289"]]
+  [1m[36mSQL (0.5ms)[0m  [1mINSERT INTO "approvable_change_requests" ("approvable_id", "approvable_type", "created_at", "requested_changes", "state", "updated_at") VALUES ($1, $2, $3, $4, $5, $6) RETURNING "id"[0m  [["approvable_id", 335], ["approvable_type", "Listing"], ["created_at", "2014-08-17 21:30:03.516554"], ["requested_changes", "{\"title\":\"blah blah\",\"description\":\"another one\"}"], ["state", "pending"], ["updated_at", "2014-08-17 21:30:03.516554"]]
+  [1m[35mSQL (0.4ms)[0m  UPDATE "listings" SET "title" = 'a brand new title', "description" = NULL WHERE "listings"."id" = 335
+  [1m[36m (42.6ms)[0m  [1mCOMMIT[0m
+  [1m[35mListing Load (0.3ms)[0m  SELECT  "listings".* FROM "listings"  WHERE "listings"."id" = $1 LIMIT 1  [["id", 335]]
+  [1m[36mListing Load (0.4ms)[0m  [1mSELECT  "listings".* FROM "listings"  WHERE "listings"."id" = $1 LIMIT 1[0m  [["id", 335]]
+  [1m[35mApprovable::ChangeRequest Load (0.5ms)[0m  SELECT  "approvable_change_requests".* FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" = $1 AND "approvable_change_requests"."approvable_type" = $2 AND ("approvable_change_requests"."state" != 'approved') LIMIT 1  [["approvable_id", 335], ["approvable_type", "Listing"]]
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35m (0.1ms)[0m  COMMIT
+  [1m[36m (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35m (0.2ms)[0m  COMMIT
+  [1m[36mListing Load (0.8ms)[0m  [1mSELECT  "listings".* FROM "listings"   ORDER BY "listings"."id" DESC LIMIT 1[0m
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36mApprovable::ChangeRequest Load (0.5ms)[0m  [1mSELECT  "approvable_change_requests".* FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" = $1 AND "approvable_change_requests"."approvable_type" = $2 AND ("approvable_change_requests"."state" != 'approved') LIMIT 1[0m  [["approvable_id", 335], ["approvable_type", "Listing"]]
+  [1m[35m (0.5ms)[0m  ROLLBACK
+undefined method `delete!' for {"title"=>"blah blah", "description"=>"another one"}:Hash
+  [1m[36mListing Load (0.7ms)[0m  [1mSELECT  "listings".* FROM "listings"   ORDER BY "listings"."id" DESC LIMIT 1[0m
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36mApprovable::ChangeRequest Load (0.7ms)[0m  [1mSELECT  "approvable_change_requests".* FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" = $1 AND "approvable_change_requests"."approvable_type" = $2 AND ("approvable_change_requests"."state" != 'approved') LIMIT 1[0m  [["approvable_id", 335], ["approvable_type", "Listing"]]
+  [1m[35mSQL (0.3ms)[0m  UPDATE "listings" SET "description" = $1, "title" = $2, "updated_at" = $3 WHERE "listings"."id" = 335  [["description", "another one"], ["title", "blah blah"], ["updated_at", "2014-08-17 21:33:58.916776"]]
+  [1m[36mSQL (0.3ms)[0m  [1mUPDATE "approvable_change_requests" SET "requested_changes" = $1, "updated_at" = $2 WHERE "approvable_change_requests"."id" = 8383[0m  [["requested_changes", "{\"title\":\"blah blah\",\"description\":\"another one\",\"updated_at\":null}"], ["updated_at", "2014-08-17 21:33:58.919059"]]
+  [1m[35mSQL (0.3ms)[0m  UPDATE "listings" SET "title" = 'a brand new title', "description" = NULL WHERE "listings"."id" = 335
+  [1m[36m (0.7ms)[0m  [1mCOMMIT[0m
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36mSQL (0.5ms)[0m  [1mUPDATE "approvable_change_requests" SET "requested_changes" = $1, "updated_at" = $2 WHERE "approvable_change_requests"."id" = 8383[0m  [["requested_changes", "{\"title\":null,\"description\":\"another one\"}"], ["updated_at", "2014-08-17 21:34:15.016012"]]
+  [1m[35m (0.8ms)[0m  COMMIT
+  [1m[36mListing Load (0.7ms)[0m  [1mSELECT  "listings".* FROM "listings"   ORDER BY "listings"."id" DESC LIMIT 1[0m
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36mApprovable::ChangeRequest Load (0.8ms)[0m  [1mSELECT  "approvable_change_requests".* FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" = $1 AND "approvable_change_requests"."approvable_type" = $2 AND ("approvable_change_requests"."state" != 'approved') LIMIT 1[0m  [["approvable_id", 335], ["approvable_type", "Listing"]]
+  [1m[35m (0.3ms)[0m  ROLLBACK
+undefined method `except!' for #<Approvable::ChangeRequest:0x007ff063268710>
+  [1m[36mListing Load (0.7ms)[0m  [1mSELECT  "listings".* FROM "listings"   ORDER BY "listings"."id" DESC LIMIT 1[0m
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36mApprovable::ChangeRequest Load (0.7ms)[0m  [1mSELECT  "approvable_change_requests".* FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" = $1 AND "approvable_change_requests"."approvable_type" = $2 AND ("approvable_change_requests"."state" != 'approved') LIMIT 1[0m  [["approvable_id", 335], ["approvable_type", "Listing"]]
+  [1m[35mSQL (0.4ms)[0m  UPDATE "listings" SET "description" = $1, "title" = $2, "updated_at" = $3 WHERE "listings"."id" = 335  [["description", "another one"], ["title", "blah blah"], ["updated_at", "2014-08-17 21:36:54.421286"]]
+  [1m[36mSQL (0.3ms)[0m  [1mUPDATE "approvable_change_requests" SET "requested_changes" = $1, "updated_at" = $2 WHERE "approvable_change_requests"."id" = 8383[0m  [["requested_changes", "{\"title\":\"blah blah\",\"description\":\"another one\"}"], ["updated_at", "2014-08-17 21:36:54.423824"]]
+  [1m[35mSQL (0.3ms)[0m  UPDATE "listings" SET "title" = 'a brand new title', "description" = NULL WHERE "listings"."id" = 335
+  [1m[36m (0.7ms)[0m  [1mCOMMIT[0m
+  [1m[35mListing Load (0.8ms)[0m  SELECT  "listings".* FROM "listings"   ORDER BY "listings"."id" DESC LIMIT 1
+  [1m[36m (0.4ms)[0m  [1mBEGIN[0m
+  [1m[35mApprovable::ChangeRequest Load (0.5ms)[0m  SELECT  "approvable_change_requests".* FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" = $1 AND "approvable_change_requests"."approvable_type" = $2 AND ("approvable_change_requests"."state" != 'approved') LIMIT 1  [["approvable_id", 335], ["approvable_type", "Listing"]]
+  [1m[36m (0.3ms)[0m  [1mCOMMIT[0m
+  [1m[35mListing Load (0.8ms)[0m  SELECT  "listings".* FROM "listings"   ORDER BY "listings"."id" DESC LIMIT 1
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mApprovable::ChangeRequest Load (0.5ms)[0m  SELECT  "approvable_change_requests".* FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" = $1 AND "approvable_change_requests"."approvable_type" = $2 AND ("approvable_change_requests"."state" != 'approved') LIMIT 1  [["approvable_id", 335], ["approvable_type", "Listing"]]
+  [1m[36mSQL (0.6ms)[0m  [1mUPDATE "listings" SET "description" = $1, "title" = $2, "updated_at" = $3 WHERE "listings"."id" = 335[0m  [["description", "another one"], ["title", "blah blah"], ["updated_at", "2014-08-17 21:37:41.872665"]]
+  [1m[35mSQL (0.4ms)[0m  UPDATE "approvable_change_requests" SET "requested_changes" = $1, "updated_at" = $2 WHERE "approvable_change_requests"."id" = 8383  [["requested_changes", "{\"title\":\"blah blah\",\"description\":\"another one\"}"], ["updated_at", "2014-08-17 21:37:41.875008"]]
+  [1m[36mSQL (0.4ms)[0m  [1mUPDATE "listings" SET "title" = 'a brand new title', "description" = NULL WHERE "listings"."id" = 335[0m
+  [1m[35m (0.4ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35m (0.2ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.6ms)[0m  UPDATE "listings" SET "description" = $1, "title" = $2, "updated_at" = $3 WHERE "listings"."id" = 335  [["description", "another one"], ["title", "blah blah"], ["updated_at", "2014-08-17 21:38:11.861966"]]
+  [1m[36mSQL (0.4ms)[0m  [1mUPDATE "approvable_change_requests" SET "requested_changes" = $1, "updated_at" = $2 WHERE "approvable_change_requests"."id" = 8383[0m  [["requested_changes", "{\"title\":\"blah blah\",\"description\":\"another one\"}"], ["updated_at", "2014-08-17 21:38:11.864181"]]
+  [1m[35mSQL (0.4ms)[0m  UPDATE "listings" SET "title" = 'a brand new title', "description" = NULL WHERE "listings"."id" = 335
+  [1m[36m (0.6ms)[0m  [1mCOMMIT[0m
+  [1m[35m (0.4ms)[0m  BEGIN
+  [1m[36m (0.2ms)[0m  [1mCOMMIT[0m
+  [1m[35mListing Load (0.9ms)[0m  SELECT  "listings".* FROM "listings"   ORDER BY "listings"."id" DESC LIMIT 1
+  [1m[36mApprovable::ChangeRequest Load (0.6ms)[0m  [1mSELECT  "approvable_change_requests".* FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" = $1 AND "approvable_change_requests"."approvable_type" = $2 AND ("approvable_change_requests"."state" != 'approved') LIMIT 1[0m  [["approvable_id", 335], ["approvable_type", "Listing"]]
+  [1m[36mListing Load (0.8ms)[0m  [1mSELECT  "listings".* FROM "listings"   ORDER BY "listings"."id" DESC LIMIT 1[0m
+  [1m[35mApprovable::ChangeRequest Load (0.7ms)[0m  SELECT  "approvable_change_requests".* FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" = $1 AND "approvable_change_requests"."approvable_type" = $2 AND ("approvable_change_requests"."state" != 'approved') LIMIT 1  [["approvable_id", 335], ["approvable_type", "Listing"]]
+  [1m[36m (0.6ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.4ms)[0m  UPDATE "approvable_change_requests" SET "requested_changes" = $1, "updated_at" = $2 WHERE "approvable_change_requests"."id" = 8383  [["requested_changes", "{\"description\":\"another one\"}"], ["updated_at", "2014-08-17 21:41:36.609376"]]
+  [1m[36m (1.2ms)[0m  [1mCOMMIT[0m
+  [1m[35mListing Load (0.8ms)[0m  SELECT  "listings".* FROM "listings"   ORDER BY "listings"."id" DESC LIMIT 1
+  [1m[36mApprovable::ChangeRequest Load (0.9ms)[0m  [1mSELECT  "approvable_change_requests".* FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" = $1 AND "approvable_change_requests"."approvable_type" = $2 AND ("approvable_change_requests"."state" != 'approved') LIMIT 1[0m  [["approvable_id", 335], ["approvable_type", "Listing"]]
+  [1m[36mListing Load (0.7ms)[0m  [1mSELECT  "listings".* FROM "listings"   ORDER BY "listings"."id" DESC LIMIT 1[0m
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.5ms)[0m  [1mINSERT INTO "bars" ("created_at", "listing_id", "updated_at") VALUES ($1, $2, $3) RETURNING "id"[0m  [["created_at", "2014-08-17 21:46:43.049235"], ["listing_id", 335], ["updated_at", "2014-08-17 21:46:43.049235"]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.5ms)[0m  INSERT INTO "bars" ("created_at", "listing_id", "updated_at") VALUES ($1, $2, $3) RETURNING "id"  [["created_at", "2014-08-17 21:46:50.146700"], ["listing_id", 335], ["updated_at", "2014-08-17 21:46:50.146700"]]
+  [1m[36m (0.6ms)[0m  [1mCOMMIT[0m
+  [1m[35mBar Load (0.5ms)[0m  SELECT "bars".* FROM "bars"  WHERE "bars"."listing_id" = $1  [["listing_id", 335]]
+  [1m[36mApprovable::ChangeRequest Load (0.6ms)[0m  [1mSELECT  "approvable_change_requests".* FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" = $1 AND "approvable_change_requests"."approvable_type" = $2 AND ("approvable_change_requests"."state" != 'approved') LIMIT 1[0m  [["approvable_id", 224], ["approvable_type", "Bar"]]
+  [1m[35mApprovable::ChangeRequest Load (0.3ms)[0m  SELECT  "approvable_change_requests".* FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" = $1 AND "approvable_change_requests"."approvable_type" = $2 AND ("approvable_change_requests"."state" != 'approved') LIMIT 1  [["approvable_id", 225], ["approvable_type", "Bar"]]
+  [1m[36mApprovable::ChangeRequest Load (0.4ms)[0m  [1mSELECT  "approvable_change_requests".* FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" = $1 AND "approvable_change_requests"."approvable_type" = $2 AND ("approvable_change_requests"."state" != 'approved') LIMIT 1[0m  [["approvable_id", 13], ["approvable_type", "Bar"]]
+  [1m[35mBar Load (0.4ms)[0m  SELECT  "bars".* FROM "bars"  WHERE "bars"."id" = $1 LIMIT 1  [["id", 224]]
+  [1m[36mApprovable::ChangeRequest Load (0.8ms)[0m  [1mSELECT  "approvable_change_requests".* FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" = $1 AND "approvable_change_requests"."approvable_type" = $2 AND ("approvable_change_requests"."state" != 'approved') LIMIT 1[0m  [["approvable_id", 224], ["approvable_type", "Bar"]]
+  [1m[35mBar Load (0.6ms)[0m  SELECT  "bars".* FROM "bars"  WHERE "bars"."id" = $1 LIMIT 1  [["id", 224]]
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mApprovable::ChangeRequest Load (0.4ms)[0m  SELECT  "approvable_change_requests".* FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" = $1 AND "approvable_change_requests"."approvable_type" = $2 AND ("approvable_change_requests"."state" != 'approved') LIMIT 1  [["approvable_id", 335], ["approvable_type", "Listing"]]
+  [1m[36m (0.2ms)[0m  [1mCOMMIT[0m
+  [1m[35mBar Load (0.7ms)[0m  SELECT  "bars".* FROM "bars"  WHERE "bars"."id" = $1 LIMIT 1  [["id", 224]]
+  [1m[36mApprovable::ChangeRequest Load (0.7ms)[0m  [1mSELECT  "approvable_change_requests".* FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" = $1 AND "approvable_change_requests"."approvable_type" = $2 AND ("approvable_change_requests"."state" != 'approved') LIMIT 1[0m  [["approvable_id", 224], ["approvable_type", "Bar"]]
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36mSQL (0.5ms)[0m  [1mUPDATE "bars" SET "title" = $1, "updated_at" = $2 WHERE "bars"."id" = 224[0m  [["title", "foo;\n"], ["updated_at", "2014-08-17 21:48:26.785497"]]
+  [1m[35mSQL (0.5ms)[0m  INSERT INTO "approvable_change_requests" ("approvable_id", "approvable_type", "created_at", "requested_changes", "state", "updated_at") VALUES ($1, $2, $3, $4, $5, $6) RETURNING "id"  [["approvable_id", 224], ["approvable_type", "Bar"], ["created_at", "2014-08-17 21:48:26.788899"], ["requested_changes", "{\"title\":\"foo;\\n\"}"], ["state", "pending"], ["updated_at", "2014-08-17 21:48:26.788899"]]
+  [1m[36mSQL (0.4ms)[0m  [1mUPDATE "bars" SET "title" = NULL WHERE "bars"."id" = 224[0m
+  [1m[35m (0.6ms)[0m  COMMIT
+  [1m[36m (0.4ms)[0m  [1mBEGIN[0m
+  [1m[35m (0.2ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.5ms)[0m  [1mUPDATE "approvable_change_requests" SET "state" = $1, "updated_at" = $2 WHERE "approvable_change_requests"."id" = 8383[0m  [["state", "submitted"], ["updated_at", "2014-08-17 21:48:48.361818"]]
+  [1m[35m (0.2ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36mFoo Load (0.3ms)[0m  [1mSELECT  "foos".* FROM "foos"  WHERE "foos"."listing_id" = $1 LIMIT 1[0m  [["listing_id", 335]]
+  [1m[35mBar Load (0.2ms)[0m  SELECT  "bars".* FROM "bars"  WHERE "bars"."id" = $1 LIMIT 1  [["id", 224]]
+  [1m[36mBar Load (0.2ms)[0m  [1mSELECT  "bars".* FROM "bars"  WHERE "bars"."id" = $1 LIMIT 1[0m  [["id", 225]]
+  [1m[35mBar Load (0.2ms)[0m  SELECT  "bars".* FROM "bars"  WHERE "bars"."id" = $1 LIMIT 1  [["id", 13]]
+  [1m[36mListing Load (0.2ms)[0m  [1mSELECT  "listings".* FROM "listings"  WHERE "listings"."id" = $1 LIMIT 1[0m  [["id", 335]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36mBar Load (0.6ms)[0m  [1mSELECT "bars".* FROM "bars"  WHERE "bars"."listing_id" = $1[0m  [["listing_id", 335]]
+  [1m[35mBar Load (0.8ms)[0m  SELECT  "bars".* FROM "bars"  WHERE "bars"."id" = $1 LIMIT 1  [["id", 224]]
+  [1m[36mApprovable::ChangeRequest Load (0.5ms)[0m  [1mSELECT  "approvable_change_requests".* FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" = $1 AND "approvable_change_requests"."approvable_type" = $2 AND ("approvable_change_requests"."state" != 'approved') LIMIT 1[0m  [["approvable_id", 224], ["approvable_type", "Bar"]]
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36mApprovable::ChangeRequest Load (0.4ms)[0m  [1mSELECT  "approvable_change_requests".* FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" = $1 AND "approvable_change_requests"."approvable_type" = $2 AND ("approvable_change_requests"."state" != 'approved') LIMIT 1[0m  [["approvable_id", 335], ["approvable_type", "Listing"]]
+  [1m[35m (0.2ms)[0m  SAVEPOINT active_record_1
+  [1m[36m (0.2ms)[0m  [1mROLLBACK TO SAVEPOINT active_record_1[0m
+  [1m[35m (0.2ms)[0m  ROLLBACK
+  [1m[36mFoo Load (0.5ms)[0m  [1mSELECT  "foos".* FROM "foos"  WHERE "foos"."listing_id" = $1 LIMIT 1[0m  [["listing_id", 335]]
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36mApprovable::ChangeRequest Load (0.3ms)[0m  [1mSELECT  "approvable_change_requests".* FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" = $1 AND "approvable_change_requests"."approvable_type" = $2 AND ("approvable_change_requests"."state" != 'approved') LIMIT 1[0m  [["approvable_id", 225], ["approvable_type", "Bar"]]
+  [1m[35mBar Load (0.3ms)[0m  SELECT  "bars".* FROM "bars"  WHERE "bars"."id" = $1 LIMIT 1  [["id", 225]]
+  [1m[36m (0.2ms)[0m  [1mCOMMIT[0m
+  [1m[35m (0.1ms)[0m  BEGIN
+  [1m[36mApprovable::ChangeRequest Load (0.3ms)[0m  [1mSELECT  "approvable_change_requests".* FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" = $1 AND "approvable_change_requests"."approvable_type" = $2 AND ("approvable_change_requests"."state" != 'approved') LIMIT 1[0m  [["approvable_id", 224], ["approvable_type", "Bar"]]
+  [1m[35m (0.1ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.4ms)[0m  [1mUPDATE "approvable_change_requests" SET "state" = $1, "updated_at" = $2 WHERE "approvable_change_requests"."id" = 8615[0m  [["state", "submitted"], ["updated_at", "2014-08-17 21:50:53.270754"]]
+  [1m[35m (0.2ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36mBar Load (0.2ms)[0m  [1mSELECT  "bars".* FROM "bars"  WHERE "bars"."id" = $1 LIMIT 1[0m  [["id", 224]]
+  [1m[35m (0.6ms)[0m  COMMIT
+  [1m[36m (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mApprovable::ChangeRequest Load (0.2ms)[0m  SELECT  "approvable_change_requests".* FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" = $1 AND "approvable_change_requests"."approvable_type" = $2 AND ("approvable_change_requests"."state" != 'approved') LIMIT 1  [["approvable_id", 13], ["approvable_type", "Bar"]]
+  [1m[36mBar Load (0.2ms)[0m  [1mSELECT  "bars".* FROM "bars"  WHERE "bars"."id" = $1 LIMIT 1[0m  [["id", 13]]
+  [1m[35m (0.1ms)[0m  COMMIT
+  [1m[36mListing Load (0.8ms)[0m  [1mSELECT  "listings".* FROM "listings"   ORDER BY "listings"."id" ASC LIMIT 1[0m
+  [1m[35mFoo Load (0.5ms)[0m  SELECT  "foos".* FROM "foos"  WHERE "foos"."listing_id" = $1 LIMIT 1  [["listing_id", 335]]
+  [1m[36mBar Load (0.3ms)[0m  [1mSELECT "bars".* FROM "bars"  WHERE "bars"."listing_id" = $1[0m  [["listing_id", 335]]
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36mApprovable::ChangeRequest Load (0.6ms)[0m  [1mSELECT  "approvable_change_requests".* FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" = $1 AND "approvable_change_requests"."approvable_type" = $2 AND ("approvable_change_requests"."state" != 'approved') LIMIT 1[0m  [["approvable_id", 225], ["approvable_type", "Bar"]]
+  [1m[35mBar Load (0.3ms)[0m  SELECT  "bars".* FROM "bars"  WHERE "bars"."id" = $1 LIMIT 1  [["id", 225]]
+  [1m[36m (0.2ms)[0m  [1mCOMMIT[0m
+  [1m[35m (0.1ms)[0m  BEGIN
+  [1m[36mApprovable::ChangeRequest Load (0.3ms)[0m  [1mSELECT  "approvable_change_requests".* FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" = $1 AND "approvable_change_requests"."approvable_type" = $2 AND ("approvable_change_requests"."state" != 'approved') LIMIT 1[0m  [["approvable_id", 224], ["approvable_type", "Bar"]]
+  [1m[35m (0.2ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.4ms)[0m  [1mUPDATE "approvable_change_requests" SET "state" = $1, "updated_at" = $2 WHERE "approvable_change_requests"."id" = 8615[0m  [["state", "pending"], ["updated_at", "2014-08-17 21:51:32.518986"]]
+  [1m[35m (0.2ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36mBar Load (0.5ms)[0m  [1mSELECT  "bars".* FROM "bars"  WHERE "bars"."id" = $1 LIMIT 1[0m  [["id", 224]]
+  [1m[35m (0.6ms)[0m  COMMIT
+  [1m[36m (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mApprovable::ChangeRequest Load (0.2ms)[0m  SELECT  "approvable_change_requests".* FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" = $1 AND "approvable_change_requests"."approvable_type" = $2 AND ("approvable_change_requests"."state" != 'approved') LIMIT 1  [["approvable_id", 13], ["approvable_type", "Bar"]]
+  [1m[36mBar Load (0.2ms)[0m  [1mSELECT  "bars".* FROM "bars"  WHERE "bars"."id" = $1 LIMIT 1[0m  [["id", 13]]
+  [1m[35m (0.1ms)[0m  COMMIT
+  [1m[36mListing Load (0.4ms)[0m  [1mSELECT  "listings".* FROM "listings"  WHERE "listings"."id" = $1 LIMIT 1[0m  [["id", 335]]
+  [1m[35m (0.4ms)[0m  BEGIN
+  [1m[36mApprovable::ChangeRequest Load (0.7ms)[0m  [1mSELECT  "approvable_change_requests".* FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" = $1 AND "approvable_change_requests"."approvable_type" = $2 AND ("approvable_change_requests"."state" != 'approved') LIMIT 1[0m  [["approvable_id", 335], ["approvable_type", "Listing"]]
+  [1m[35m (0.3ms)[0m  SAVEPOINT active_record_1
+  [1m[36m (0.2ms)[0m  [1mROLLBACK TO SAVEPOINT active_record_1[0m
+  [1m[35m (0.2ms)[0m  ROLLBACK
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35m (0.2ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.4ms)[0m  [1mUPDATE "approvable_change_requests" SET "state" = $1, "updated_at" = $2 WHERE "approvable_change_requests"."id" = 8383[0m  [["state", "pending"], ["updated_at", "2014-08-17 21:51:52.831351"]]
+  [1m[35m (0.2ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36mFoo Load (0.4ms)[0m  [1mSELECT  "foos".* FROM "foos"  WHERE "foos"."listing_id" = $1 LIMIT 1[0m  [["listing_id", 335]]
+  [1m[35mBar Load (0.3ms)[0m  SELECT "bars".* FROM "bars"  WHERE "bars"."listing_id" = $1  [["listing_id", 335]]
+  [1m[36mApprovable::ChangeRequest Load (0.3ms)[0m  [1mSELECT  "approvable_change_requests".* FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" = $1 AND "approvable_change_requests"."approvable_type" = $2 AND ("approvable_change_requests"."state" != 'approved') LIMIT 1[0m  [["approvable_id", 225], ["approvable_type", "Bar"]]
+  [1m[35mBar Load (0.3ms)[0m  SELECT  "bars".* FROM "bars"  WHERE "bars"."id" = $1 LIMIT 1  [["id", 225]]
+  [1m[36mApprovable::ChangeRequest Load (0.3ms)[0m  [1mSELECT  "approvable_change_requests".* FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" = $1 AND "approvable_change_requests"."approvable_type" = $2 AND ("approvable_change_requests"."state" != 'approved') LIMIT 1[0m  [["approvable_id", 224], ["approvable_type", "Bar"]]
+  [1m[35m (0.1ms)[0m  SAVEPOINT active_record_1
+  [1m[36m (0.1ms)[0m  [1mROLLBACK TO SAVEPOINT active_record_1[0m
+  [1m[35m (0.2ms)[0m  ROLLBACK
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mApprovable::ChangeRequest Load (0.3ms)[0m  SELECT  "approvable_change_requests".* FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" = $1 AND "approvable_change_requests"."approvable_type" = $2 AND ("approvable_change_requests"."state" != 'approved') LIMIT 1  [["approvable_id", 225], ["approvable_type", "Bar"]]
+  [1m[36mBar Load (0.4ms)[0m  [1mSELECT  "bars".* FROM "bars"  WHERE "bars"."id" = $1 LIMIT 1[0m  [["id", 225]]
+  [1m[35m (0.3ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35m (0.1ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.4ms)[0m  [1mUPDATE "approvable_change_requests" SET "state" = $1, "updated_at" = $2 WHERE "approvable_change_requests"."id" = 8615[0m  [["state", "submitted"], ["updated_at", "2014-08-17 21:52:24.787712"]]
+  [1m[35m (0.2ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36mBar Load (0.3ms)[0m  [1mSELECT  "bars".* FROM "bars"  WHERE "bars"."id" = $1 LIMIT 1[0m  [["id", 224]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mApprovable::ChangeRequest Load (0.2ms)[0m  SELECT  "approvable_change_requests".* FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" = $1 AND "approvable_change_requests"."approvable_type" = $2 AND ("approvable_change_requests"."state" != 'approved') LIMIT 1  [["approvable_id", 13], ["approvable_type", "Bar"]]
+  [1m[36mBar Load (0.1ms)[0m  [1mSELECT  "bars".* FROM "bars"  WHERE "bars"."id" = $1 LIMIT 1[0m  [["id", 13]]
+  [1m[35m (0.1ms)[0m  COMMIT
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35m (0.2ms)[0m  SAVEPOINT active_record_1
+  [1m[36m (0.3ms)[0m  [1mROLLBACK TO SAVEPOINT active_record_1[0m
+  [1m[35m (0.3ms)[0m  ROLLBACK
+  [1m[36mListing Load (0.6ms)[0m  [1mSELECT  "listings".* FROM "listings"  WHERE "listings"."id" = $1 LIMIT 1[0m  [["id", 335]]
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36mApprovable::ChangeRequest Load (0.4ms)[0m  [1mSELECT  "approvable_change_requests".* FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" = $1 AND "approvable_change_requests"."approvable_type" = $2 AND ("approvable_change_requests"."state" != 'approved') LIMIT 1[0m  [["approvable_id", 335], ["approvable_type", "Listing"]]
+  [1m[35m (0.2ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.4ms)[0m  [1mUPDATE "approvable_change_requests" SET "state" = $1, "updated_at" = $2 WHERE "approvable_change_requests"."id" = 8383[0m  [["state", "pending"], ["updated_at", "2014-08-17 21:52:35.137452"]]
+  [1m[35m (0.2ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36mFoo Load (0.3ms)[0m  [1mSELECT  "foos".* FROM "foos"  WHERE "foos"."listing_id" = $1 LIMIT 1[0m  [["listing_id", 335]]
+  [1m[35mBar Load (0.3ms)[0m  SELECT "bars".* FROM "bars"  WHERE "bars"."listing_id" = $1  [["listing_id", 335]]
+  [1m[36mApprovable::ChangeRequest Load (0.2ms)[0m  [1mSELECT  "approvable_change_requests".* FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" = $1 AND "approvable_change_requests"."approvable_type" = $2 AND ("approvable_change_requests"."state" != 'approved') LIMIT 1[0m  [["approvable_id", 225], ["approvable_type", "Bar"]]
+  [1m[35mBar Load (0.2ms)[0m  SELECT  "bars".* FROM "bars"  WHERE "bars"."id" = $1 LIMIT 1  [["id", 225]]
+  [1m[36mApprovable::ChangeRequest Load (0.2ms)[0m  [1mSELECT  "approvable_change_requests".* FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" = $1 AND "approvable_change_requests"."approvable_type" = $2 AND ("approvable_change_requests"."state" != 'approved') LIMIT 1[0m  [["approvable_id", 224], ["approvable_type", "Bar"]]
+  [1m[35m (0.1ms)[0m  SAVEPOINT active_record_1
+  [1m[36mSQL (0.3ms)[0m  [1mUPDATE "approvable_change_requests" SET "state" = $1, "updated_at" = $2 WHERE "approvable_change_requests"."id" = 8615[0m  [["state", "pending"], ["updated_at", "2014-08-17 21:52:35.145674"]]
+  [1m[35m (0.1ms)[0m  RELEASE SAVEPOINT active_record_1
+  [1m[36mBar Load (0.1ms)[0m  [1mSELECT  "bars".* FROM "bars"  WHERE "bars"."id" = $1 LIMIT 1[0m  [["id", 224]]
+  [1m[35mApprovable::ChangeRequest Load (0.2ms)[0m  SELECT  "approvable_change_requests".* FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" = $1 AND "approvable_change_requests"."approvable_type" = $2 AND ("approvable_change_requests"."state" != 'approved') LIMIT 1  [["approvable_id", 13], ["approvable_type", "Bar"]]
+  [1m[36mBar Load (0.2ms)[0m  [1mSELECT  "bars".* FROM "bars"  WHERE "bars"."id" = $1 LIMIT 1[0m  [["id", 13]]
+  [1m[35mListing Load (0.2ms)[0m  SELECT  "listings".* FROM "listings"  WHERE "listings"."id" = $1 LIMIT 1  [["id", 335]]
+  [1m[36m (0.5ms)[0m  [1mCOMMIT[0m
+  [1m[35mListing Load (0.9ms)[0m  SELECT  "listings".* FROM "listings"  WHERE "listings"."id" = $1 LIMIT 1  [["id", 335]]
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mApprovable::ChangeRequest Load (0.4ms)[0m  SELECT  "approvable_change_requests".* FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" = $1 AND "approvable_change_requests"."approvable_type" = $2 AND ("approvable_change_requests"."state" != 'approved') LIMIT 1  [["approvable_id", 335], ["approvable_type", "Listing"]]
+  [1m[36m (0.2ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.4ms)[0m  UPDATE "approvable_change_requests" SET "state" = $1, "updated_at" = $2 WHERE "approvable_change_requests"."id" = 8383  [["state", "submitted"], ["updated_at", "2014-08-17 21:52:43.921181"]]
+  [1m[36m (0.2ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35mFoo Load (0.3ms)[0m  SELECT  "foos".* FROM "foos"  WHERE "foos"."listing_id" = $1 LIMIT 1  [["listing_id", 335]]
+  [1m[36mBar Load (0.4ms)[0m  [1mSELECT "bars".* FROM "bars"  WHERE "bars"."listing_id" = $1[0m  [["listing_id", 335]]
+  [1m[35mApprovable::ChangeRequest Load (0.2ms)[0m  SELECT  "approvable_change_requests".* FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" = $1 AND "approvable_change_requests"."approvable_type" = $2 AND ("approvable_change_requests"."state" != 'approved') LIMIT 1  [["approvable_id", 225], ["approvable_type", "Bar"]]
+  [1m[36mBar Load (0.2ms)[0m  [1mSELECT  "bars".* FROM "bars"  WHERE "bars"."id" = $1 LIMIT 1[0m  [["id", 225]]
+  [1m[35mApprovable::ChangeRequest Load (0.2ms)[0m  SELECT  "approvable_change_requests".* FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" = $1 AND "approvable_change_requests"."approvable_type" = $2 AND ("approvable_change_requests"."state" != 'approved') LIMIT 1  [["approvable_id", 224], ["approvable_type", "Bar"]]
+  [1m[36m (0.1ms)[0m  [1mSAVEPOINT active_record_1[0m
+  [1m[35mSQL (0.3ms)[0m  UPDATE "approvable_change_requests" SET "state" = $1, "updated_at" = $2 WHERE "approvable_change_requests"."id" = 8615  [["state", "submitted"], ["updated_at", "2014-08-17 21:52:43.929773"]]
+  [1m[36m (0.1ms)[0m  [1mRELEASE SAVEPOINT active_record_1[0m
+  [1m[35mBar Load (0.1ms)[0m  SELECT  "bars".* FROM "bars"  WHERE "bars"."id" = $1 LIMIT 1  [["id", 224]]
+  [1m[36mApprovable::ChangeRequest Load (0.1ms)[0m  [1mSELECT  "approvable_change_requests".* FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" = $1 AND "approvable_change_requests"."approvable_type" = $2 AND ("approvable_change_requests"."state" != 'approved') LIMIT 1[0m  [["approvable_id", 13], ["approvable_type", "Bar"]]
+  [1m[35mBar Load (0.1ms)[0m  SELECT  "bars".* FROM "bars"  WHERE "bars"."id" = $1 LIMIT 1  [["id", 13]]
+  [1m[36mListing Load (0.2ms)[0m  [1mSELECT  "listings".* FROM "listings"  WHERE "listings"."id" = $1 LIMIT 1[0m  [["id", 335]]
+  [1m[35m (0.5ms)[0m  COMMIT

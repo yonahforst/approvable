@@ -3,6 +3,8 @@ require 'aasm'
 require 'amoeba'
 
 module Approvable
+  cattr_accessor :disabled
+  
   class Engine < ::Rails::Engine
     isolate_namespace Approvable
 

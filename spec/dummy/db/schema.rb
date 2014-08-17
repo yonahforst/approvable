@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140815174653) do
+ActiveRecord::Schema.define(version: 20140816143802) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -31,6 +31,12 @@ ActiveRecord::Schema.define(version: 20140815174653) do
   create_table "bars", force: true do |t|
     t.string   "title"
     t.integer  "listing_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "foobars", force: true do |t|
+    t.json     "json_hash"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

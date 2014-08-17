@@ -19,4 +19,8 @@ FactoryGirl.define do
   factory :bar do
     sequence(:title) {|n| "Title #{n}"}    
   end
+  
+  factory :foobar do
+    json_hash {{}}
+  end
 end
