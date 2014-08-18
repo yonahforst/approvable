@@ -13,7 +13,7 @@ module Approvable
 
       it 'doesnt track attribute excluded by except option' do
         Listing.class_eval { acts_as_approvable except: :title }
-        
+
         expect{
           @listing.update(title: 'a brand new title')
         }.not_to change {@listing.change_requests.count}
@@ -54,6 +54,7 @@ module Approvable
       end
 
       it 'tracks attributes not excluded by except' do
+        
         Listing.class_eval { acts_as_approvable except: :description }
 
         expect{
@@ -95,47 +96,6 @@ module Approvable
         expect(@listing.apply_changes.title).to eq @listing.title
       end
 
-      it 'applies changes to has_one relation ships' do
-        foo = create(:foo, listing: @listing)
-        foo.update(title: 'bar')
-        
-        @listing.reload
-        @listing.submit_changes
-        foo.reload
-        
-        expect(foo.change_status).to eq 'submitted'
-        
-        @listing.approve_changes
-        foo.reload
-        
-        expect(foo.change_status).to eq 'approved'
-        expect(foo.title).to eq 'bar'
-        
-      end
-
-      it 'applies changes to has_many relationships' do
-        bar1 = create(:bar, listing: @listing)
-        bar2 = create(:bar, listing: @listing)
-        bar1.update(title: 'foo')
-        bar2.update(title: 'foo')
-        
-        @listing.reload
-        @listing.submit_changes
-        bar1.reload
-        bar2.reload
-        
-        expect(bar1.change_status).to eq 'submitted'
-        expect(bar2.change_status).to eq 'submitted'
-        
-        @listing.approve_changes
-        bar1.reload
-        bar2.reload
-        
-        expect(bar1.change_status).to eq 'approved'
-        expect(bar2.change_status).to eq 'approved'
-        expect(bar1.title).to eq 'foo'
-        expect(bar2.title).to eq 'foo'
-      end
     end
 
 
@@ -192,27 +152,6 @@ module Approvable
         }.to change {@listing.change_requests.count}.by(1)
       end
 
-
-      it 'works with validations' do
-        @listing.title = nil
-        expect{
-          @listing.save
-        }.not_to change {@listing.change_requests.count}
-
-        expect(@listing.errors).not_to be_empty
-      end
-
-      it 'accepts validate: false option' do
-        @listing.title = nil
-
-        expect{
-          @listing.save(validate: false)
-        }.to change {@listing.change_requests.count}.by(1)
-
-        expect(@listing.errors).to be_empty
-      end
-
-
       it 'creates a new change request for an approved listing and doesnt change exiting' do
         change_request = create(:change_request, :approved, approvable: @listing )
         expect{
@@ -250,7 +189,7 @@ module Approvable
         }.not_to change {@listing.change_requests.count}
 
         @listing.reload
-        expect(@listing.requested_changes).to eq "description" => 'another one'
+        expect(@listing.requested_changes).to eq "title" => original_title, "description" => 'another one'
         expect(@listing.change_status).to eq 'pending'
       end
 
@@ -280,18 +219,6 @@ module Approvable
         change_request.reload
         expect(change_request.requested_changes).to match "title" => 'a brand new title', "description" => 'a hot bod'
         expect(change_request.state).to eq 'pending'
-      end
-
-      it 'cant update an existing listing if a change is already submitted' do
-        change_request = create(:change_request, :submitted, approvable: @listing )
-        @listing.reload
-
-        @listing.update(title: 'a brand new title')
-        expect(@listing.errors).not_to be_empty
-
-        change_request.reload
-        expect(change_request.requested_changes).not_to match "title" => 'a brand new title'
-        expect(change_request.state).to eq 'submitted'
       end
 
       it 'updates an existing change request for a rejected listing and changes the status to pending' do
@@ -390,44 +317,20 @@ module Approvable
       end
     end
 
-    context '#preview_changes' do
-      it 'returns attribtue with new value' do
-        @listing.update(title: 'a brand new title')
-        @listing.reload
-
-        preview = @listing.preview_changes
-
-        expect(@listing.title).not_to eq 'a brand new title'
-        expect(preview.title).to eq 'a brand new title'
-      end
-
-      it 'returns existing value it unchanged' do
-        @listing.update(title: 'a brand new title')
-        preview = @listing.preview_changes
-
-        expect(preview.description).to eq @listing.description
-      end
-
-      it 'returns existing value if no current_change_request' do
-        preview = @listing.preview_changes
-
-        expect(preview.title).to eq @listing.title
-      end
-    end
     
     context '#store_accessor' do
       it 'also captures store_accessor methods' do
         foobar = create(:foobar)
         foobar.update(foo: 'test', bar: 'sets')
         foobar.reload
-        preview = foobar.preview_changes
         
         expect(foobar.foo).to be nil
         expect(foobar.bar).to be nil
-        expect(preview.foo).to eq 'test'
-        expect(preview.bar).to eq 'sets'
         
+        foobar.apply_changes
         
+        expect(foobar.foo).to eq 'test'
+        expect(foobar.bar).to eq 'sets'
         
       end
     end

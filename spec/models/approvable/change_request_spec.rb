@@ -10,35 +10,35 @@ module Approvable
       expect(@request.state).to eq 'pending'
     end
     
-    # it 'wont create new request unless all others are approved' do
-    #   approvable = @request.approvable
-    #   expect{create(:change_request, approvable: approvable)}.to raise_error ActiveRecord::RecordInvalid
-    #
-    #   @request.submit!
-    #   expect{create(:change_request, approvable: approvable)}.to raise_error ActiveRecord::RecordInvalid
-    #
-    #   @request.reject!
-    #   expect{create(:change_request, approvable: approvable)}.to raise_error ActiveRecord::RecordInvalid
-    #
-    #   @request.submit!
-    #   @request.approve!
-    #   expect{create(:change_request, approvable: approvable)}.not_to raise_error
-    # end
-    #
-    # it 'cannot update requested_changes once submitted' do
-    #   @request.submit!
-    #   expect{
-    #     @request.update!(requested_changes: {title: 'a brand new title'})
-    #   }.to raise_error ActiveRecord::RecordInvalid
-    # end
-    #
-    # it 'cannot update requested_changes once approved' do
-    #   @request.submit!
-    #   @request.approve!
-    #   expect{
-    #     @request.update!(requested_changes: {title: 'a brand new title'})
-    #   }.to raise_error ActiveRecord::RecordInvalid
-    # end
+    it 'wont create new request unless all others are approved' do
+      approvable = @request.approvable
+      expect{create(:change_request, approvable: approvable)}.to raise_error ActiveRecord::RecordInvalid
+
+      @request.submit!
+      expect{create(:change_request, approvable: approvable)}.to raise_error ActiveRecord::RecordInvalid
+
+      @request.reject!
+      expect{create(:change_request, approvable: approvable)}.to raise_error ActiveRecord::RecordInvalid
+
+      @request.submit!
+      @request.approve!
+      expect{create(:change_request, approvable: approvable)}.not_to raise_error
+    end
+
+    it 'cannot update requested_changes once submitted' do
+      @request.submit!
+      expect{
+        @request.update!(requested_changes: {title: 'a brand new title'})
+      }.to raise_error ActiveRecord::RecordInvalid
+    end
+
+    it 'cannot update requested_changes once approved' do
+      @request.submit!
+      @request.approve!
+      expect{
+        @request.update!(requested_changes: {title: 'a brand new title'})
+      }.to raise_error ActiveRecord::RecordInvalid
+    end
     
     it 'cannot transition out of approved' do
       @request.submit!

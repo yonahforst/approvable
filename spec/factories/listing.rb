@@ -11,15 +11,7 @@ FactoryGirl.define do
     end
     
   end
-  
-  factory :foo do
-    sequence(:title) {|n| "Title #{n}"}    
-  end
-  
-  factory :bar do
-    sequence(:title) {|n| "Title #{n}"}    
-  end
-  
+
   factory :foobar do
     json_hash {{}}
   end

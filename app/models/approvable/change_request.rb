@@ -3,8 +3,8 @@ module Approvable
     belongs_to :approvable, :polymorphic => true
     belongs_to :approver, :polymorphic => true
 
-    # validate :no_outstanding_change_requests, on: :create
-    # validate :not_submitted_or_approved, if: :requested_changes_changed?
+    validate :no_outstanding_change_requests, on: :create
+    validate :not_submitted_or_approved, if: :requested_changes_changed?
 
     after_save :update_rejected_to_pending, if: :requested_changes_changed?
     
@@ -49,17 +49,17 @@ module Approvable
     
     private
     
-    # def not_submitted_or_approved
-    #   if ['approved', 'submitted'].include? state_was
-    #     errors.add(:base, "cannot change a #{state} request")
-    #   end
-    # end
-    #
-    # def no_outstanding_change_requests
-    #   if self.class.where(approvable: approvable).unapproved.any?
-    #     errors.add(:base, 'please use the existing change request')
-    #   end
-    # end
+    def not_submitted_or_approved
+      if ['approved', 'submitted'].include? state_was
+        errors.add(:base, "cannot change a #{state} request")
+      end
+    end
+
+    def no_outstanding_change_requests
+      if self.class.where(approvable: approvable).unapproved.any?
+        errors.add(:base, 'please use the existing change request')
+      end
+    end
     
     def update_rejected_to_pending
       if rejected?
