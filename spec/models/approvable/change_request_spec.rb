@@ -5,7 +5,6 @@ module Approvable
     
     before(:each) {@request = create(:change_request)}
     
-    
     it 'creates a change request as pending' do
       expect(@request.state).to eq 'pending'
     end

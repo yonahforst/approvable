@@ -10,7 +10,32 @@ module Approvable
       it 'responds' do
         expect(Listing).to respond_to :acts_as_approvable
       end
-
+      
+      it 'aliases assign_attributes' do
+        Approvable.disabled = false
+        test_model_class = Class.new(ActiveRecord::Base) do
+          def self.name
+            'TestModel'
+          end
+          acts_as_approvable
+        end
+        expect(test_model_class.instance_methods).to include :assign_attributes_without_change_request 
+      end
+      
+      it 'does not alias assign_attributes if Approvable is disabled' do
+        Approvable.disabled = true
+        test_model_class = Class.new(ActiveRecord::Base) do
+          def self.name
+            'TestModel'
+          end
+          acts_as_approvable
+        end
+        
+        expect(test_model_class.instance_methods).not_to include :assign_attributes_without_change_request 
+        Approvable.disabled = false
+        
+      end
+      
       it 'doesnt track attribute excluded by except option' do
         Listing.class_eval { acts_as_approvable except: :title }
 

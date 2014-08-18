@@ -6,26 +6,19 @@ module Approvable
     end
  
     module ClassMethods
-      def acts_as_approvable **options
-        unless Approvable.disabled == true 
+      def acts_as_approvable **options      
+        include Approvable::ActsAsApprovable::LocalInstanceMethods
+
+        has_many :change_requests, as: :approvable, class_name: 'Approvable::ChangeRequest', dependent: :destroy
+        has_one :current_change_request, -> {where.not(state: 'approved') }, as: :approvable, class_name: 'Approvable::ChangeRequest', autosave: true
+
+        cattr_accessor :ignored_attrs
+        self.ignored_attrs = [*options[:except]] + [:id, :created_at, :updated_at]
+        self.ignored_attrs = self.attribute_names.map(&:to_sym) - [*options[:only]] if options[:only]
+        self.ignored_attrs.map!(&:to_s)
         
-          include Approvable::ActsAsApprovable::LocalInstanceMethods
-
-          has_many :change_requests, as: :approvable, class_name: 'Approvable::ChangeRequest', dependent: :destroy
-          has_one :current_change_request, -> {where.not(state: 'approved') }, as: :approvable, class_name: 'Approvable::ChangeRequest', autosave: true
-
-
-          # amoeba {enable}
-
-          cattr_accessor :ignored_attrs
-          # self.ignored_attrs = []
-          self.ignored_attrs = [*options[:except]] + [:id, :created_at, :updated_at]
-          self.ignored_attrs = self.attribute_names.map(&:to_sym) - [*options[:only]] if options[:only]
-          self.ignored_attrs.map!(&:to_s)
-
-          unless method_defined? :assign_attributes_without_change_request 
-            alias_method_chain :assign_attributes, :change_request
-          end
+        unless Approvable.disabled == true || method_defined?(:assign_attributes_without_change_request)
+          alias_method_chain :assign_attributes, :change_request
         end
       end
 
@@ -84,7 +77,7 @@ module Approvable
         approvable_params = new_attributes.except(*self.class.ignored_attrs)
 
         if approvable_params.any?
-          current_change_request || build_current_change_request        
+          current_change_request || build_current_change_request(requested_changes: {})       
           current_change_request.requested_changes = requested_changes.merge approvable_params
         end
         
