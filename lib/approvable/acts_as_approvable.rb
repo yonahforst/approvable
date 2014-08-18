@@ -11,13 +11,16 @@ module Approvable
 
         has_many :change_requests, as: :approvable, class_name: 'Approvable::ChangeRequest', dependent: :destroy
         has_one :current_change_request, -> {where.not(state: 'approved') }, as: :approvable, class_name: 'Approvable::ChangeRequest', autosave: true
-
+        
+        before_save :apply_changes, if: :auto_approve?
+        after_save :force_approve!, if: :auto_approve?
+        
         cattr_accessor :ignored_attrs
         self.ignored_attrs = [*options[:except]] + [:id, :created_at, :updated_at]
         self.ignored_attrs = self.attribute_names.map(&:to_sym) - [*options[:only]] if options[:only]
         self.ignored_attrs.map!(&:to_s)
         
-        unless Approvable.disabled == true || method_defined?(:assign_attributes_without_change_request)
+        unless method_defined?(:assign_attributes_without_change_request)
           alias_method_chain :assign_attributes, :change_request
         end
       end
@@ -80,12 +83,20 @@ module Approvable
           current_change_request || build_current_change_request(requested_changes: {})       
           current_change_request.requested_changes = requested_changes.merge approvable_params
         end
-        
+      
         assign_attributes_without_change_request ignored_params
       end
       
 
       private
+      
+      def auto_approve?
+        Approvable.auto_approve == true
+      end
+      
+      def force_approve!
+        current_change_request.update_column :state, 'approved'
+      end
 
     end
   end

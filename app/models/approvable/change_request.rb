@@ -30,7 +30,7 @@ module Approvable
       event :approve do
         transitions from: :submitted, to: :approved
       end
-
+      
       event :reject do
         transitions from: :submitted, to: :rejected, :on_transition => Proc.new {|obj, *args| obj.transition_options(*args)}
       end

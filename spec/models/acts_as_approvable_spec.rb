@@ -3,6 +3,7 @@ require 'rails_helper'
 module Approvable
   describe ActsAsApprovable do
     before(:each) do
+      Approvable.auto_approve = false
       @listing = create(:listing, :approved)
     end
     
@@ -11,29 +12,13 @@ module Approvable
         expect(Listing).to respond_to :acts_as_approvable
       end
       
-      it 'aliases assign_attributes' do
-        Approvable.disabled = false
-        test_model_class = Class.new(ActiveRecord::Base) do
-          def self.name
-            'TestModel'
-          end
-          acts_as_approvable
-        end
-        expect(test_model_class.instance_methods).to include :assign_attributes_without_change_request 
-      end
-      
-      it 'does not alias assign_attributes if Approvable is disabled' do
-        Approvable.disabled = true
-        test_model_class = Class.new(ActiveRecord::Base) do
-          def self.name
-            'TestModel'
-          end
-          acts_as_approvable
-        end
-        
-        expect(test_model_class.instance_methods).not_to include :assign_attributes_without_change_request 
-        Approvable.disabled = false
-        
+      it 'applies changes and auto approves' do
+        Approvable.auto_approve = true
+
+        @listing.update(title: 'a brand new title')
+        @listing.reload
+
+        expect(@listing.title).to eq 'a brand new title'
       end
       
       it 'doesnt track attribute excluded by except option' do
