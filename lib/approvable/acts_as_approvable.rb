@@ -15,13 +15,22 @@ module Approvable
         before_save :apply_changes, if: :auto_approve?
         after_save :force_approve!, if: :auto_approve?
         
-        cattr_accessor :ignored_attrs
-        self.ignored_attrs = [*options[:except]] + [:id, :created_at, :updated_at]
-        self.ignored_attrs = self.attribute_names.map(&:to_sym) - [*options[:only]] if options[:only]
-        self.ignored_attrs.map!(&:to_s)
-        
+        cattr_accessor :filter_attrs, :filter_type
+        if options[:except]
+          self.filter_type = :except
+          self.filter_attrs = options[:except]
+        elsif options[:only]
+          self.filter_type = :only
+          self.filter_attrs = options[:only]
+        else
+          self.filter_type = :except
+          self.filter_attrs = []
+        end
+                
         unless method_defined?(:assign_attributes_without_change_request)
           alias_method_chain :assign_attributes, :change_request
+          alias_method :attributes=, :assign_attributes
+          
         end
       end
 
@@ -74,10 +83,9 @@ module Approvable
         reload
       end
       
-      def assign_attributes_with_change_request new_attributes
-        new_attributes.stringify_keys!
-        ignored_params = new_attributes.slice(*self.class.ignored_attrs)
-        approvable_params = new_attributes.except(*self.class.ignored_attrs)
+      def assign_attributes_with_change_request **new_attributes
+        ignored_params = ignored_attributes(new_attributes)
+        approvable_params = approvable_attributes(new_attributes)
 
         if approvable_params.any?
           current_change_request || build_current_change_request(requested_changes: {})       
@@ -85,17 +93,54 @@ module Approvable
         end
       
         assign_attributes_without_change_request ignored_params
-      end
-      
+      end      
 
       private
+      
+      def ignored_attributes(new_attributes)
+        process_nested_hash(new_attributes, self.class.filter_attrs, filter_type == :except)
+      end
+      
+      def approvable_attributes(new_attributes)
+        process_nested_hash(new_attributes, self.class.filter_attrs, filter_type == :only )
+      end
+      
+      # h = {"first_name"=>"Leif", "last_name"=>"Gensert", "address"=>{"street"=>"Preysinstraße", "city"=>"München"}}
+      def process_nested_hash(attributes, keys, should_match)
+        attributes = attributes.dup.stringify_keys!
+        hash = {}
+        [*keys].each do |key|
+          if key.is_a? Hash
+            key.each do |k,v| 
+              hash[k.to_s] = process_nested_hash(attributes[k.to_s], v, should_match)
+            end
+          elsif key.is_a? Array
+            key.each do|k|
+              process_nested_hash(attributes[k.to_s], k, should_match)
+            end
+          else
+            value = attributes.delete(key.to_s)  
+            hash[key.to_s] = value if value
+          end
+        end
+        
+        if should_match
+          return hash
+        else
+          return attributes
+        end
+        
+      end
+
+      # process_nested_hash h, [:first_name, {address: :street}], true
+      # process_nested_hash h, [:first_name, {address: :street}], false
       
       def auto_approve?
         Approvable.auto_approve == true
       end
       
       def force_approve!
-        current_change_request.update_column :state, 'approved'
+        current_change_request.update_column :state, 'approved' if current_change_request
       end
 
     end

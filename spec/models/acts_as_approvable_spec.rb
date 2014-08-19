@@ -83,6 +83,34 @@ module Approvable
 
         expect(@listing.title).not_to eq 'a brand new title'
       end
+      
+      it 'accepts nested except attribtues' do
+        Foobar.class_eval { acts_as_approvable except: [foo: [:image, :title], bar: :description ] }
+        
+        foobar = Foobar.new(
+          foo: {image: 'photo.jpg', title: 'me, on the hill', tags: ['me', 'hill', 'on']}, 
+          bar: {description: 'test test test', title: 'blahhhh'}
+        )
+        
+        expect(foobar.foo).to eq({image: 'photo.jpg', title: 'me, on the hill'})
+        expect(foobar.bar).to eq({description: 'test test test'})
+
+        expect(foobar.requested_changes).to match(foo: {tags: ['me', 'hill', 'on']}, bar: {title: 'blahhhh'})
+      end
+      
+      it 'accepts nested only attribtues' do
+        Foobar.class_eval { acts_as_approvable only: [foo: [:image, :title], bar: :description ] }
+        
+        foobar = Foobar.new(
+          foo: {image: 'photo.jpg', title: 'me, on the hill', tags: ['me', 'hill', 'on']}, 
+          bar: {description: 'test test test', title: 'blahhhh'}
+        )
+        
+        expect(foobar.foo).to eq({tags: ['me', 'hill', 'on']})
+        expect(foobar.bar).to eq({title: 'blahhhh'})
+        expect(foobar.requested_changes).to match(foo: {image: 'photo.jpg', title: 'me, on the hill'}, bar: {description: 'test test test'} )
+      end
+      
     end
 
     it 'has_many change_requests' do

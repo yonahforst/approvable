@@ -19,7 +19,7 @@ Gem::Specification.new do |s|
 
   s.add_dependency "rails", "~> 4.1.4"
   s.add_dependency 'aasm'
-  s.add_dependency 'amoeba'
+  s.add_dependency 'activesupport-json_encoder'
   
 
   s.add_development_dependency "pg"

@@ -4,7 +4,7 @@ module Approvable
     belongs_to :approver, :polymorphic => true
 
     validate :no_outstanding_change_requests, on: :create
-    validate :not_submitted_or_approved, if: :requested_changes_changed?
+    # validate :not_submitted_or_approved, if: :requested_changes_changed?
 
     after_save :update_rejected_to_pending, if: :requested_changes_changed?
     
