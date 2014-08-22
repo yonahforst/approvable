@@ -35,7 +35,7 @@ After this alias, all parameters passed to either `assign_attributes` or `attrib
 This is intended to work with web forms, where changes are submitted as a parameter hash.
 
 Caveat 1: only works with attribute values that can be serialized into json. For images and other file attachemnts, you can create a new column in your model (i.e. 'approved_image') then do something like this:
-```
+```ruby
   class Article < ActiveRecord::Base
   .....
     mount_uploader :image, ImageUploader 
