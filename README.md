@@ -4,9 +4,9 @@
 Supports: Rails 4.1 + Postgres
 
 ### Why
-Users can update various database record but you want administrators to approve all changes before they are applied.
+Users can update objects through the web but you want administrators to approve all changes before they are applied.
 
-### How
+### What
 ```ruby
 class Article < ActiveRecord::Base
   acts_as_approvable
@@ -14,7 +14,6 @@ end
 
 article = Article.create(title: 'food') #=> #<Article id: 1, title: nil>
 article #=> #<Article id: 1, title: nil>
-article.title_with_changes #=> 'food'
 article.submit_changes #=> true
 article.approve_changes #=> true 
 article #=> #<Article id: 1, title: 'food'>
@@ -27,7 +26,42 @@ pending --> submitted --> approved
               OR      --> unsubmitted --> pending --> ...
 ```
 
-When an object is submitted, it's attributes cannot be modified (will raise a validtion error on save)
+#### How
+
+Approvable works by aliasing `assign_attributes` and `attributes=` to `assign_attributes_with_change_request`. (the old `assign_attribtues` method can still be accessed via `assign_attributes_without_change_request`).
+
+After this alias, all parameters passed to either `assign_attributes` or `attributes=` will be stored in a JSON column on the change_request table. When the change request is approved, those attributes are applied to the model instance and saved.
+
+This is intended to work with web forms, where changes are submitted as a parameter hash.
+
+Caveat 1: only works with attribute values that can be serialized into json. For images and other file attachemnts, you can create a new column in your model (i.e. 'approved_image') then do something like this:
+```
+  class Article < ActiveRecord::Base
+  .....
+    mount_uploader :image, ImageUploader 
+    mount_uploader :approved_image, ImageUploader 
+    
+    def approve_changes_with_images
+      transaction do
+        approve_changes_without_images
+        approve_image
+      end
+    end
+    
+    alias_method_chain :approve_changes, :images
+    
+    def approve_image
+      if image.present? && update(remote_approved_image_url: image.url)
+        remove_image!
+        save
+      end
+    end
+  ......
+  end
+```
+
+Caveat 2: only overrides methods that use `assign_attributes` underneath (such as `update`). Assigning attributes directly via `some_attribute = 'foobar'` will skip the change request process.
+
 
 #### Some handy methods
 ```ruby
@@ -35,32 +69,35 @@ article = Article.first
 article.foo #=> 'food'
 article.change_status #=> nil
 
+    mount_uploader :approved_image, ImageUploader 
+    
+    def approve_image
+      if image.present? && update(remote_approved_image_url: image.url)
+        self.remove_image!
+        self.save
+      end
+    end
   #Making a change
-article.title = 'the beach' #=> 'the beach'
-article.save #=> true
+article.update(title: 'the beach') #=> true
 article.title #=> 'food'
-article.title_with_changes #=> 'the beach'
+article.change_request[:title] #=> 'the beach'
 article.change_status #=> 'pending'
 
   #Making another change
 article.update(title: 'space and time') #=> true
 article.title #=> 'food'
-article.title_with_changes #=> 'space and time'
+article.change_request[:title] #=> 'space and time'
 article.change_status #=> 'pending'
 
   # Submitting changes
 article.submit_changes #=> true
 article.change_status #=> 'submitted'
 
-  # Updating after submit
-article.update(title: 'hipster beards') #=> false
-article.errors #=> {:"current_change_request.base"=>["cannot change a submitted request"]} 
-
   # Unsubmitting changes
 aritlce.unsubmit_changes #=> true
 article.update(title: 'hipster beards') #=> true
 article.title #=> 'food'
-article.title_with_changes #=> 'hipster beards'
+article.change_request[:title] #=> 'hipster beards'
 
   # Rejecting changes
 article.reject_changes #=> true
@@ -70,7 +107,7 @@ article.change_status #=> 'rejected'
 article.change_status #=> 'rejected'
 article.update(title: 'fixies and coffee')
 article.title #=> 'food'
-article.title_with_changes #=> 'fixies and coffee'
+article.change_request[:title] #=> 'fixies and coffee'
 article.change_status #=> 'pending'
 article.submit_changes #=> true
 article.change_status #=> 'submitted'
