@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
   s.version     = Approvable::VERSION
   s.authors     = ["Yonah Forst"]
   s.email       = ["yonaforst@hotmail.com"]
-  s.homepage    = "http://gihub.com/joshblour/approvable"
+  s.homepage    = "http://github.com/joshblour/approvable"
   s.summary     = "Don't change models without approval"
   s.description = "requires model attribute changes to be approved"
   s.license     = "MIT"
