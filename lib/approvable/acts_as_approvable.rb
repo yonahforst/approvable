@@ -29,7 +29,7 @@ module Approvable
                 
         unless method_defined?(:assign_attributes_without_change_request)
           alias_method_chain :assign_attributes, :change_request
-          alias_method :attributes=, :assign_attributes
+          alias_method :attributes=, :assign_attributes_with_change_request
           
         end
       end
@@ -39,7 +39,7 @@ module Approvable
     module LocalInstanceMethods
                
       def requested_changes
-        current_change_request ? current_change_request.requested_changes : {}
+        current_change_request ? current_change_request.requested_changes.with_indifferent_access : {}
       end
       
       # use current_change_request here so that we dont get pending from a newly built change_request
@@ -83,7 +83,7 @@ module Approvable
         reload
       end
       
-      def assign_attributes_with_change_request **new_attributes
+      def assign_attributes_with_change_request new_attributes
         ignored_params = ignored_attributes(new_attributes)
         approvable_params = approvable_attributes(new_attributes)
 
@@ -112,11 +112,11 @@ module Approvable
         [*keys].each do |key|
           if key.is_a? Hash
             key.each do |k,v| 
-              hash[k.to_s] = process_nested_hash(attributes[k.to_s], v, should_match)
+              hash[k.to_s] = process_nested_hash(attributes[k.to_s], v, should_match) if attributes[k.to_s]
             end
           elsif key.is_a? Array
             key.each do|k|
-              process_nested_hash(attributes[k.to_s], k, should_match)
+              process_nested_hash(attributes[k.to_s], k, should_match) if attributes[k.to_s]
             end
           else
             value = attributes.delete(key.to_s)  
