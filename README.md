@@ -9,14 +9,14 @@ Users can update objects through the web but you want administrators to approve 
 ### What
 ```ruby
 class Article < ActiveRecord::Base
-  acts_as_approvable
+  acts_as_approvable except: :description
 end
 
-article = Article.create(title: 'food') #=> #<Article id: 1, title: nil>
-article #=> #<Article id: 1, title: nil>
+article = Article.create(title: 'food', description: 'I love it') #=> #<Article id: 1, title: nil, description: 'I love it'>
+article #=> #<Article id: 1, title: nil, description: 'I love it'>
 article.submit_changes #=> true
 article.approve_changes #=> true 
-article #=> #<Article id: 1, title: 'food'>
+article #=> #<Article id: 1, title: 'food', description: 'I love it'>
 ```
 
 Here's the approval process:
