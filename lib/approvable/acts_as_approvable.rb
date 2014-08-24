@@ -72,9 +72,8 @@ module Approvable
       
       def approve_changes
         transaction do
-          if current_change_request && apply_changes.save!
+          if current_change_request && apply_changes.save
             current_change_request.approve!
-            reload
           end
         end
       end
