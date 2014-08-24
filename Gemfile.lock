@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    approvable (0.0.1)
+    approvable (0.0.2)
       aasm
       activesupport-json_encoder
       rails (~> 4.1.4)
@@ -9,7 +9,7 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
-    aasm (3.3.2)
+    aasm (3.3.3)
     actionmailer (4.1.4)
       actionpack (= 4.1.4)
       actionview (= 4.1.4)
