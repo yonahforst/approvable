@@ -7,6 +7,7 @@ module Approvable
     # validate :not_submitted_or_approved, if: :requested_changes_changed?
 
     after_save :update_rejected_to_pending, if: :requested_changes_changed?
+    after_create :auto_approve?
     
     scope :unapproved, -> {where.not(state: 'approved')}
     
@@ -64,6 +65,13 @@ module Approvable
     def update_rejected_to_pending
       if rejected?
         unreject!
+      end
+    end
+    
+    def auto_approve?
+      if Approvable.auto_approve == true
+        self.approvable.submit_changes
+        self.approvable.approve_changes
       end
     end
     

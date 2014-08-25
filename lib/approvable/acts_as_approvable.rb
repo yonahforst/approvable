@@ -11,10 +11,7 @@ module Approvable
 
         has_many :change_requests, as: :approvable, class_name: 'Approvable::ChangeRequest', dependent: :destroy
         has_one :current_change_request, -> {where.not(state: 'approved') }, as: :approvable, class_name: 'Approvable::ChangeRequest', autosave: true
-        
-        before_save :apply_changes, if: :auto_approve?
-        after_save :force_approve!, if: :auto_approve?
-        
+                
         cattr_accessor :filter_attrs, :filter_type
         if options[:except]
           self.filter_type = :except
@@ -30,7 +27,6 @@ module Approvable
         unless method_defined?(:assign_attributes_without_change_request)
           alias_method_chain :assign_attributes, :change_request
           alias_method :attributes=, :assign_attributes_with_change_request
-          
         end
       end
 
@@ -134,14 +130,6 @@ module Approvable
 
       # process_nested_hash h, [:first_name, {address: :street}], true
       # process_nested_hash h, [:first_name, {address: :street}], false
-      
-      def auto_approve?
-        Approvable.auto_approve == true
-      end
-      
-      def force_approve!
-        current_change_request.update_column :state, 'approved' if current_change_request
-      end
 
     end
   end
