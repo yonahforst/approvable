@@ -4,7 +4,7 @@ require 'activesupport/json_encoder'
 require 'amoeba'
 
 module Approvable
-  cattr_accessor :disabled, :auto_approve
+  cattr_accessor :disabled, :auto_approve, :skip_validations
   
   def ignore_auto_approve &block
     auto_approve_was = auto_approve

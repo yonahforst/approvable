@@ -31,7 +31,7 @@ module Approvable
           alias_method :attributes=, :assign_attributes_with_change_request
         end
 
-        unless method_defined?(:valid_without_changes?)
+        unless method_defined?(:valid_without_changes?) && Approvable.skip_validations
           alias_method_chain :valid?, :changes
         end
       end
