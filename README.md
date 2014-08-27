@@ -34,7 +34,20 @@ After this alias, all parameters passed to either `assign_attributes` or `attrib
 
 This is intended to work with web forms, where changes are submitted as a parameter hash.
 
-Caveat 1: only works with attribute values that can be serialized into json. For images and other file attachemnts, you can create a new column in your model (i.e. 'approved_image') then do something like this:
+Approvable also aliases `valid?` to `valid_with_changes?` which performs validation on duplicate, which it creates, and then copies any errors over to your object.
+
+It accepts :only and :except options, which work with nested attributes as well.
+```ruby
+class Article < ActiveRecord::Base
+  acts_as_approvable except: [:description, :title]
+end
+
+class Foobar < ActiveRecord::Base
+  acts_as_approvable only: {bar: [:title, :description]}
+end
+```
+
+Caveat 1: only works with attribute values that can be serialized into json. For images and other file attachments, you can create a new column in your model (i.e. 'approved_image') then do something like this:
 ```ruby
   class Article < ActiveRecord::Base
   .....
@@ -67,16 +80,9 @@ Caveat 2: only overrides methods that use `assign_attributes` underneath (such a
 ```ruby
 article = Article.first
 article.foo #=> 'food'
-article.change_status #=> nil
+article.change_status #=> approved
 
-    mount_uploader :approved_image, ImageUploader 
-    
-    def approve_image
-      if image.present? && update(remote_approved_image_url: image.url)
-        self.remove_image!
-        self.save
-      end
-    end
+
   #Making a change
 article.update(title: 'the beach') #=> true
 article.title #=> 'food'
@@ -124,7 +130,6 @@ TODO:
 
 write tests for earlier versions of rails
 serialize changes in a text field for non-postgres dbs
-add reject messages
 
 
 
