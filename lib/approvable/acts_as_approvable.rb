@@ -86,7 +86,7 @@ module Approvable
         return false unless valid?
         
         new_attributes.keys.each {|k| reset_attribute!(k)}
-        # @changed_attributes.clear
+        @changed_attributes.clear
         clear_aggregation_cache
         clear_association_cache
         
