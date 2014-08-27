@@ -109,6 +109,7 @@ module Approvable
 
 
       def valid_with_changes? options = {}
+        errors.clear
         dup = self.amoeba_dup
         dup.apply_changes
         dup.valid_without_changes? options
