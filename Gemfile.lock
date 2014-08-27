@@ -1,9 +1,17 @@
+GIT
+  remote: git://github.com/rocksolidwebdesign/amoeba.git
+  revision: 51c6fa6c37ab4864fa026e577eefb17316c49e1b
+  specs:
+    amoeba (2.0.0)
+      activerecord (>= 3.2.6, < 5)
+
 PATH
   remote: .
   specs:
     approvable (0.0.2)
       aasm
       activesupport-json_encoder
+      amoeba
       rails (~> 4.1.4)
 
 GEM
@@ -116,6 +124,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  amoeba!
   approvable!
   database_cleaner
   factory_girl_rails

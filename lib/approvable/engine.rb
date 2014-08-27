@@ -1,6 +1,7 @@
 require 'approvable/acts_as_approvable'
 require 'aasm'
 require 'activesupport/json_encoder'
+require 'amoeba'
 
 module Approvable
   cattr_accessor :disabled, :auto_approve

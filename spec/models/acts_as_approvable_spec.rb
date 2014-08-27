@@ -98,8 +98,8 @@ module Approvable
           bar: {description: 'test test test', title: 'blahhhh'}
         )
         
-        expect(foobar.foo).to eq({image: 'photo.jpg', title: 'me, on the hill'}.stringify_keys)
-        expect(foobar.bar).to eq({description: 'test test test'}.stringify_keys)
+        expect(foobar.foo).to eq({image: 'photo.jpg', title: 'me, on the hill'})
+        expect(foobar.bar).to eq({description: 'test test test'})
 
         expect(foobar.requested_changes).to match({foo: {tags: ['me', 'hill', 'on']}, bar: {title: 'blahhhh'}}.stringify_keys)
       end
@@ -112,8 +112,8 @@ module Approvable
           bar: {description: 'test test test', title: 'blahhhh'}
         )
         
-        expect(foobar.foo).to eq({tags: ['me', 'hill', 'on']})
-        expect(foobar.bar).to eq({title: 'blahhhh'})
+        expect(foobar.foo).to eq({tags: ['me', 'hill', 'on']}.stringify_keys)
+        expect(foobar.bar).to eq({title: 'blahhhh'}.stringify_keys)
         expect(foobar.requested_changes).to match(foo: {image: 'photo.jpg', title: 'me, on the hill'}, bar: {description: 'test test test'} )
       end
       
