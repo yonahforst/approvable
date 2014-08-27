@@ -21,6 +21,12 @@ module Approvable
         expect(@listing.title).to eq 'a brand new title'
       end
       
+      it 'works with validation' do
+        expect{
+          @listing.update!(title: nil)
+        }.to raise_error ActiveRecord::RecordInvalid
+      end
+      
       it 'doesnt track attribute excluded by except option' do
         Listing.class_eval { acts_as_approvable except: :title }
 
@@ -92,10 +98,10 @@ module Approvable
           bar: {description: 'test test test', title: 'blahhhh'}
         )
         
-        expect(foobar.foo).to eq({image: 'photo.jpg', title: 'me, on the hill'})
-        expect(foobar.bar).to eq({description: 'test test test'})
+        expect(foobar.foo).to eq({image: 'photo.jpg', title: 'me, on the hill'}.stringify_keys)
+        expect(foobar.bar).to eq({description: 'test test test'}.stringify_keys)
 
-        expect(foobar.requested_changes).to match(foo: {tags: ['me', 'hill', 'on']}, bar: {title: 'blahhhh'})
+        expect(foobar.requested_changes).to match({foo: {tags: ['me', 'hill', 'on']}, bar: {title: 'blahhhh'}}.stringify_keys)
       end
       
       it 'accepts nested only attribtues' do
@@ -124,6 +130,8 @@ module Approvable
 
       it 'returns listing with requested changes' do
         @listing.update(title: 'a brand new title')
+
+        @listing.reload
 
         expect(@listing.title).not_to eq 'a brand new title'
         expect(@listing.apply_changes.title).to eq 'a brand new title'

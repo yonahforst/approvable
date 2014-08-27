@@ -5,6 +5,14 @@ require 'activesupport/json_encoder'
 module Approvable
   cattr_accessor :disabled, :auto_approve
   
+  def ignore_auto_approve &block
+    auto_approve_was = auto_approve
+    auto_approve = false
+    block.call
+    auto_approve = auto_approve_was
+  end
+    
+  
   class Engine < ::Rails::Engine
     isolate_namespace Approvable
 

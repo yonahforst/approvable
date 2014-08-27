@@ -13,6 +13,7 @@ module Approvable
         has_one :current_change_request, -> {where.not(state: 'approved') }, as: :approvable, class_name: 'Approvable::ChangeRequest', autosave: true
                 
         cattr_accessor :filter_attrs, :filter_type
+        
         if options[:except]
           self.filter_type = :except
           self.filter_attrs = options[:except]
@@ -80,18 +81,26 @@ module Approvable
       end
       
       def assign_attributes_with_change_request new_attributes
-        ignored_params = ignored_attributes(new_attributes)
-        approvable_params = approvable_attributes(new_attributes)
+        assign_attributes_without_change_request new_attributes        
+        
+        return false unless valid?
+        
+        new_attributes.keys.each {|k| reset_attribute!(k)}
+        @changed_attributes.clear
+      
+        ignored_changes = ignored_attributes(new_attributes)
+        approvable_changes = approvable_attributes(new_attributes)
 
-        if approvable_params.any?
-          current_change_request || build_current_change_request(requested_changes: {})       
-          current_change_request.requested_changes = requested_changes.merge approvable_params
+        if approvable_changes.any?
+          current_change_request || build_current_change_request(requested_changes: {})    
+          existing_changes = current_change_request.requested_changes.except(*ignored_changes.keys)   
+          current_change_request.requested_changes = existing_changes.merge approvable_changes
         end
       
-        assign_attributes_without_change_request ignored_params
+        assign_attributes_without_change_request ignored_changes
       end      
 
-      private
+      # private
       
       def ignored_attributes(new_attributes)
         process_nested_hash(new_attributes, self.class.filter_attrs, filter_type == :except)
