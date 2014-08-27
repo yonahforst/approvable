@@ -87,7 +87,9 @@ module Approvable
         
         new_attributes.keys.each {|k| reset_attribute!(k)}
         @changed_attributes.clear
-      
+        clear_aggregation_cache
+        clear_association_cache
+        
         ignored_changes = ignored_attributes(new_attributes)
         approvable_changes = approvable_attributes(new_attributes)
 
