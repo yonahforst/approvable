@@ -31,8 +31,8 @@ module Approvable
           alias_method :attributes=, :assign_attributes_with_change_request
         end
 
-        unless method_defined?(:valid_without_changes?) && Approvable.skip_validations
-          alias_method_chain :valid?, :changes
+        unless method_defined?(:valid_without_changes?)
+          alias_method_chain :valid?, :changes if Approvable.validate_with_changes
         end
       end
 
@@ -146,7 +146,7 @@ module Approvable
           #     process_nested_hash(attributes[k.to_s], k, should_match) if attributes[k.to_s]
           #   end
           else
-            value = old_attrs.delete(key)  
+            value = old_attrs.delete(key)
             new_attrs[key] = value if value
           end
         end

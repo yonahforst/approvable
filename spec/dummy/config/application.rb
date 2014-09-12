@@ -11,6 +11,8 @@ require "sprockets/railtie"
 Bundler.require(*Rails.groups)
 require "approvable"
 
+Approvable.validate_with_changes = true
+
 module Dummy
   class Application < Rails::Application
     # Settings in config/environments/* take precedence over those specified here.
