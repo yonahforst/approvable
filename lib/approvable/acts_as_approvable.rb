@@ -65,6 +65,14 @@ module Approvable
         end 
       end
       
+      def submit_changes_with_validation
+        valid?(:submit) && submit_changes
+      end
+      
+      def submit_changes_with_validation!
+        raise(ActiveRecord::RecordInvalid.new(self)) unless submit_changes_with_validation
+      end
+      
       def unsubmit_changes
         transaction do
           current_change_request.unsubmit! if current_change_request

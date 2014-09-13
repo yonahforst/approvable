@@ -292,6 +292,17 @@ module Approvable
 
         expect(@listing.title).not_to eq 'a brand new title'
       end
+      
+      it 'submits changes with validation' do
+        @listing.update(title: 'a brand new title')
+        @listing.current_change_request.update(requested_changes: {title: ''})
+        expect {
+          @listing.submit_changes_with_validation!
+        }.to raise_error ActiveRecord::RecordInvalid
+
+        expect(@listing.change_status).not_to eq 'submitted'
+
+      end
 
       it 'unsubmits changes' do
         @listing.update(title: 'a brand new title')
