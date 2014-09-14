@@ -406,3 +406,122 @@
   [1m[36mApprovable::ChangeRequest Load (0.3ms)[0m  [1mSELECT "approvable_change_requests".* FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" = $1 AND "approvable_change_requests"."approvable_type" = $2[0m  [["approvable_id", 335], ["approvable_type", "Listing"]]
   [1m[35m (0.3ms)[0m  SELECT COUNT(*) FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" IS NULL AND ("approvable_change_requests"."state" != 'approved')
   [1m[36m (0.3ms)[0m  [1mROLLBACK[0m
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35m (0.8ms)[0m  SELECT COUNT(*) FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" IS NULL AND ("approvable_change_requests"."state" != 'approved')
+  [1m[36m (0.3ms)[0m  [1mROLLBACK[0m
+  [1m[35mListing Load (1.3ms)[0m  SELECT  "listings".* FROM "listings"   ORDER BY "listings"."id" ASC LIMIT 1
+  [1m[36m (0.4ms)[0m  [1mBEGIN[0m
+  [1m[35mApprovable::ChangeRequest Load (0.6ms)[0m  SELECT  "approvable_change_requests".* FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" = $1 AND "approvable_change_requests"."approvable_type" = $2 AND ("approvable_change_requests"."state" != 'approved') LIMIT 1  [["approvable_id", 335], ["approvable_type", "Listing"]]
+  [1m[36mApprovable::ChangeRequest Load (0.4ms)[0m  [1mSELECT "approvable_change_requests".* FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" = $1 AND "approvable_change_requests"."approvable_type" = $2[0m  [["approvable_id", 335], ["approvable_type", "Listing"]]
+  [1m[35m (0.2ms)[0m  ROLLBACK
+  [1m[36mListing Load (0.7ms)[0m  [1mSELECT  "listings".* FROM "listings"   ORDER BY "listings"."id" ASC LIMIT 1[0m
+  [1m[35m (0.6ms)[0m  BEGIN
+  [1m[36mApprovable::ChangeRequest Load (0.5ms)[0m  [1mSELECT  "approvable_change_requests".* FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" = $1 AND "approvable_change_requests"."approvable_type" = $2 AND ("approvable_change_requests"."state" != 'approved') LIMIT 1[0m  [["approvable_id", 335], ["approvable_type", "Listing"]]
+  [1m[35mApprovable::ChangeRequest Load (0.3ms)[0m  SELECT "approvable_change_requests".* FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" = $1 AND "approvable_change_requests"."approvable_type" = $2  [["approvable_id", 335], ["approvable_type", "Listing"]]
+  [1m[36m (0.4ms)[0m  [1mSELECT COUNT(*) FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" IS NULL AND ("approvable_change_requests"."state" != 'approved')[0m
+  [1m[35m (0.2ms)[0m  COMMIT
+  [1m[36m (0.4ms)[0m  [1mBEGIN[0m
+  [1m[35m (0.4ms)[0m  SELECT COUNT(*) FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" IS NULL AND ("approvable_change_requests"."state" != 'approved')
+  [1m[36m (0.3ms)[0m  [1mCOMMIT[0m
+  [1m[36mListing Load (0.9ms)[0m  [1mSELECT  "listings".* FROM "listings"   ORDER BY "listings"."id" ASC LIMIT 1[0m
+  [1m[35mApprovable::ChangeRequest Load (0.6ms)[0m  SELECT  "approvable_change_requests".* FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" = $1 AND "approvable_change_requests"."approvable_type" = $2 AND ("approvable_change_requests"."state" != 'approved') LIMIT 1  [["approvable_id", 335], ["approvable_type", "Listing"]]
+  [1m[36m (0.6ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.8ms)[0m  DELETE FROM "approvable_change_requests" WHERE "approvable_change_requests"."id" = $1  [["id", 14441]]
+  [1m[36m (0.8ms)[0m  [1mCOMMIT[0m
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36mApprovable::ChangeRequest Load (0.2ms)[0m  [1mSELECT "approvable_change_requests".* FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" = $1 AND "approvable_change_requests"."approvable_type" = $2[0m  [["approvable_id", 335], ["approvable_type", "Listing"]]
+  [1m[35m (0.3ms)[0m  SELECT COUNT(*) FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" IS NULL AND ("approvable_change_requests"."state" != 'approved')
+  [1m[36m (0.2ms)[0m  [1mCOMMIT[0m
+  [1m[35mListing Load (1.0ms)[0m  SELECT  "listings".* FROM "listings"  WHERE "listings"."id" = $1 LIMIT 1  [["id", 335]]
+  [1m[36mApprovable::ChangeRequest Load (0.5ms)[0m  [1mSELECT  "approvable_change_requests".* FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" = $1 AND "approvable_change_requests"."approvable_type" = $2 AND ("approvable_change_requests"."state" != 'approved') LIMIT 1[0m  [["approvable_id", 335], ["approvable_type", "Listing"]]
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36mApprovable::ChangeRequest Load (0.5ms)[0m  [1mSELECT "approvable_change_requests".* FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" = $1 AND "approvable_change_requests"."approvable_type" = $2[0m  [["approvable_id", 335], ["approvable_type", "Listing"]]
+  [1m[35m (0.9ms)[0m  SELECT COUNT(*) FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" IS NULL AND ("approvable_change_requests"."state" != 'approved')
+  [1m[36mSQL (0.5ms)[0m  [1mINSERT INTO "approvable_change_requests" ("approvable_id", "approvable_type", "created_at", "state", "updated_at") VALUES ($1, $2, $3, $4, $5) RETURNING "id"[0m  [["approvable_id", 335], ["approvable_type", "Listing"], ["created_at", "2014-09-14 11:45:39.841512"], ["state", "pending"], ["updated_at", "2014-09-14 11:45:39.841512"]]
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35m (0.7ms)[0m  SELECT COUNT(*) FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" IS NULL AND ("approvable_change_requests"."state" != 'approved')
+  [1m[36m (0.3ms)[0m  [1mCOMMIT[0m
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36m (0.5ms)[0m  [1mSELECT COUNT(*) FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" IS NULL AND ("approvable_change_requests"."state" != 'approved')[0m
+  [1m[35mSQL (0.3ms)[0m  UPDATE "listings" SET "title" = $1, "updated_at" = $2 WHERE "listings"."id" = 335  [["title", "434d"], ["updated_at", "2014-09-14 11:46:27.039044"]]
+  [1m[36m (0.5ms)[0m  [1mCOMMIT[0m
+  [1m[35mListing Load (0.5ms)[0m  SELECT  "listings".* FROM "listings"  WHERE "listings"."id" = $1 LIMIT 1  [["id", 335]]
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mApprovable::ChangeRequest Load (0.6ms)[0m  SELECT  "approvable_change_requests".* FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" = $1 AND "approvable_change_requests"."approvable_type" = $2 AND ("approvable_change_requests"."state" != 'approved') LIMIT 1  [["approvable_id", 335], ["approvable_type", "Listing"]]
+  [1m[36mApprovable::ChangeRequest Load (0.6ms)[0m  [1mSELECT "approvable_change_requests".* FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" = $1 AND "approvable_change_requests"."approvable_type" = $2[0m  [["approvable_id", 335], ["approvable_type", "Listing"]]
+  [1m[35m (0.4ms)[0m  SELECT COUNT(*) FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" IS NULL AND ("approvable_change_requests"."state" != 'approved')
+  [1m[36m (0.2ms)[0m  [1mCOMMIT[0m
+  [1m[35mListing Load (0.7ms)[0m  SELECT  "listings".* FROM "listings"  WHERE "listings"."id" = $1 LIMIT 1  [["id", 335]]
+  [1m[36mApprovable::ChangeRequest Load (1.0ms)[0m  [1mSELECT  "approvable_change_requests".* FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" = $1 AND "approvable_change_requests"."approvable_type" = $2 AND ("approvable_change_requests"."state" != 'approved') LIMIT 1[0m  [["approvable_id", 335], ["approvable_type", "Listing"]]
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36mApprovable::ChangeRequest Load (0.5ms)[0m  [1mSELECT "approvable_change_requests".* FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" = $1 AND "approvable_change_requests"."approvable_type" = $2[0m  [["approvable_id", 335], ["approvable_type", "Listing"]]
+  [1m[35m (0.5ms)[0m  SELECT COUNT(*) FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" IS NULL AND ("approvable_change_requests"."state" != 'approved')
+  [1m[36m (0.2ms)[0m  [1mCOMMIT[0m
+  [1m[35mListing Load (1.0ms)[0m  SELECT  "listings".* FROM "listings"  WHERE "listings"."id" = $1 LIMIT 1  [["id", 335]]
+  [1m[36mApprovable::ChangeRequest Load (0.6ms)[0m  [1mSELECT  "approvable_change_requests".* FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" = $1 AND "approvable_change_requests"."approvable_type" = $2 AND ("approvable_change_requests"."state" != 'approved') LIMIT 1[0m  [["approvable_id", 335], ["approvable_type", "Listing"]]
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36mApprovable::ChangeRequest Load (0.5ms)[0m  [1mSELECT "approvable_change_requests".* FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" = $1 AND "approvable_change_requests"."approvable_type" = $2[0m  [["approvable_id", 335], ["approvable_type", "Listing"]]
+  [1m[35m (1.0ms)[0m  SELECT COUNT(*) FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" IS NULL AND ("approvable_change_requests"."state" != 'approved')
+  [1m[36m (0.3ms)[0m  [1mCOMMIT[0m
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36m (0.6ms)[0m  [1mSELECT COUNT(*) FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" IS NULL AND ("approvable_change_requests"."state" != 'approved')[0m
+  [1m[35m (0.4ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35m (0.5ms)[0m  SELECT COUNT(*) FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" IS NULL AND ("approvable_change_requests"."state" != 'approved')
+  [1m[36m (0.2ms)[0m  [1mCOMMIT[0m
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36m (0.5ms)[0m  [1mSELECT COUNT(*) FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" IS NULL AND ("approvable_change_requests"."state" != 'approved')[0m
+  [1m[35m (0.2ms)[0m  COMMIT
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35m (0.3ms)[0m  SELECT COUNT(*) FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" IS NULL AND ("approvable_change_requests"."state" != 'approved')
+  [1m[36m (0.2ms)[0m  [1mCOMMIT[0m
+  [1m[35mListing Load (0.4ms)[0m  SELECT  "listings".* FROM "listings"  WHERE "listings"."id" = $1 LIMIT 1  [["id", 335]]
+  [1m[36mApprovable::ChangeRequest Load (0.6ms)[0m  [1mSELECT  "approvable_change_requests".* FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" = $1 AND "approvable_change_requests"."approvable_type" = $2 AND ("approvable_change_requests"."state" != 'approved') LIMIT 1[0m  [["approvable_id", 335], ["approvable_type", "Listing"]]
+  [1m[36mListing Load (0.8ms)[0m  [1mSELECT  "listings".* FROM "listings"   ORDER BY "listings"."id" ASC LIMIT 1[0m
+  [1m[35mApprovable::ChangeRequest Load (0.4ms)[0m  SELECT  "approvable_change_requests".* FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" = $1 AND "approvable_change_requests"."approvable_type" = $2 AND ("approvable_change_requests"."state" != 'approved') LIMIT 1  [["approvable_id", 335], ["approvable_type", "Listing"]]
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mApprovable::ChangeRequest Load (0.3ms)[0m  SELECT "approvable_change_requests".* FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" = $1 AND "approvable_change_requests"."approvable_type" = $2  [["approvable_id", 335], ["approvable_type", "Listing"]]
+  [1m[36m (0.3ms)[0m  [1mSELECT COUNT(*) FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" IS NULL AND ("approvable_change_requests"."state" != 'approved')[0m
+  [1m[35mSQL (0.3ms)[0m  UPDATE "approvable_change_requests" SET "requested_changes" = $1, "updated_at" = $2 WHERE "approvable_change_requests"."id" = 15484  [["requested_changes", "{\"title\":\"bar\",\"description\":\"fooo\"}"], ["updated_at", "2014-09-14 11:50:46.463975"]]
+  [1m[36m (0.6ms)[0m  [1mCOMMIT[0m
+  [1m[35m (0.4ms)[0m  BEGIN
+  [1m[36m (0.5ms)[0m  [1mSELECT COUNT(*) FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" IS NULL AND ("approvable_change_requests"."state" != 'approved')[0m
+  [1m[35mSQL (0.4ms)[0m  UPDATE "approvable_change_requests" SET "requested_changes" = $1, "updated_at" = $2 WHERE "approvable_change_requests"."id" = 15484  [["requested_changes", "{\"title\":\"bar\",\"description\":\"bar\"}"], ["updated_at", "2014-09-14 11:50:52.105707"]]
+  [1m[36m (0.6ms)[0m  [1mCOMMIT[0m
+  [1m[35m (0.4ms)[0m  BEGIN
+  [1m[36m (0.4ms)[0m  [1mSELECT COUNT(*) FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" IS NULL AND ("approvable_change_requests"."state" != 'approved')[0m
+  [1m[35mSQL (0.4ms)[0m  UPDATE "approvable_change_requests" SET "requested_changes" = $1, "updated_at" = $2 WHERE "approvable_change_requests"."id" = 15484  [["requested_changes", "{\"title\":\"bar\",\"description\":\"barwew\"}"], ["updated_at", "2014-09-14 11:51:00.340465"]]
+  [1m[36m (0.5ms)[0m  [1mCOMMIT[0m
+  [1m[36mListing Load (1.6ms)[0m  [1mSELECT  "listings".* FROM "listings"   ORDER BY "listings"."id" ASC LIMIT 1[0m
+  [1m[35m (0.7ms)[0m  BEGIN
+  [1m[36mApprovable::ChangeRequest Load (0.4ms)[0m  [1mSELECT  "approvable_change_requests".* FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" = $1 AND "approvable_change_requests"."approvable_type" = $2 AND ("approvable_change_requests"."state" != 'approved') LIMIT 1[0m  [["approvable_id", 335], ["approvable_type", "Listing"]]
+  [1m[35mApprovable::ChangeRequest Load (0.3ms)[0m  SELECT "approvable_change_requests".* FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" = $1 AND "approvable_change_requests"."approvable_type" = $2  [["approvable_id", 335], ["approvable_type", "Listing"]]
+  [1m[36m (0.3ms)[0m  [1mSELECT COUNT(*) FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" IS NULL AND ("approvable_change_requests"."state" != 'approved')[0m
+  [1m[35mSQL (0.3ms)[0m  UPDATE "approvable_change_requests" SET "requested_changes" = $1, "updated_at" = $2 WHERE "approvable_change_requests"."id" = 15484  [["requested_changes", "{\"title\":\"bar\",\"description\":\"barwew\",\"1410695550\":{\"title\":\"bar\",\"description\":\"barwew\"}}"], ["updated_at", "2014-09-14 11:52:30.661418"]]
+  [1m[36m (0.6ms)[0m  [1mCOMMIT[0m
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36m (0.4ms)[0m  [1mSELECT COUNT(*) FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" IS NULL AND ("approvable_change_requests"."state" != 'approved')[0m
+  [1m[35mSQL (0.4ms)[0m  UPDATE "approvable_change_requests" SET "requested_changes" = $1, "updated_at" = $2 WHERE "approvable_change_requests"."id" = 15484  [["requested_changes", "{\"title\":\"bar\",\"description\":\"barwew\",\"1410695550\":{\"title\":\"bar\",\"description\":\"barwew\"},\"1410695552\":{\"title\":\"bar\",\"description\":\"barwew\"}}"], ["updated_at", "2014-09-14 11:52:32.806397"]]
+  [1m[36m (0.6ms)[0m  [1mCOMMIT[0m
+  [1m[36mListing Load (0.8ms)[0m  [1mSELECT  "listings".* FROM "listings"   ORDER BY "listings"."id" ASC LIMIT 1[0m
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36mApprovable::ChangeRequest Load (0.8ms)[0m  [1mSELECT  "approvable_change_requests".* FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" = $1 AND "approvable_change_requests"."approvable_type" = $2 AND ("approvable_change_requests"."state" != 'approved') LIMIT 1[0m  [["approvable_id", 335], ["approvable_type", "Listing"]]
+  [1m[35m (0.3ms)[0m  ROLLBACK
+  [1m[36mListing Load (0.7ms)[0m  [1mSELECT  "listings".* FROM "listings"   ORDER BY "listings"."id" ASC LIMIT 1[0m
+  [1m[35m (0.4ms)[0m  BEGIN
+  [1m[36mApprovable::ChangeRequest Load (0.6ms)[0m  [1mSELECT  "approvable_change_requests".* FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" = $1 AND "approvable_change_requests"."approvable_type" = $2 AND ("approvable_change_requests"."state" != 'approved') LIMIT 1[0m  [["approvable_id", 335], ["approvable_type", "Listing"]]
+  [1m[35m (0.3ms)[0m  ROLLBACK
+  [1m[36m (0.3ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.4ms)[0m  DELETE FROM "approvable_change_requests" WHERE "approvable_change_requests"."id" = $1  [["id", 15484]]
+  [1m[36m (0.8ms)[0m  [1mCOMMIT[0m
+  [1m[35mListing Load (0.5ms)[0m  SELECT  "listings".* FROM "listings"  WHERE "listings"."id" = $1 LIMIT 1  [["id", 335]]
+  [1m[36m (0.4ms)[0m  [1mBEGIN[0m
+  [1m[35mApprovable::ChangeRequest Load (0.5ms)[0m  SELECT  "approvable_change_requests".* FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" = $1 AND "approvable_change_requests"."approvable_type" = $2 AND ("approvable_change_requests"."state" != 'approved') LIMIT 1  [["approvable_id", 335], ["approvable_type", "Listing"]]
+  [1m[36m (0.3ms)[0m  [1mROLLBACK[0m
+  [1m[36mListing Load (0.7ms)[0m  [1mSELECT  "listings".* FROM "listings"   ORDER BY "listings"."id" ASC LIMIT 1[0m
+  [1m[35m (0.3ms)[0m  BEGIN
+  [1m[36mApprovable::ChangeRequest Load (0.4ms)[0m  [1mSELECT  "approvable_change_requests".* FROM "approvable_change_requests"  WHERE "approvable_change_requests"."approvable_id" = $1 AND "approvable_change_requests"."approvable_type" = $2 AND ("approvable_change_requests"."state" != 'approved') LIMIT 1[0m  [["approvable_id", 335], ["approvable_type", "Listing"]]
+  [1m[35m (0.3ms)[0m  ROLLBACK
+  [1m[36m (0.5ms)[0m  [1mBEGIN[0m
+  [1m[35m (0.2ms)[0m  ROLLBACK

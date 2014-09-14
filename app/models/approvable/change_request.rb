@@ -48,6 +48,10 @@ module Approvable
       self.notes[Time.now.to_s] = note if note      
     end
     
+    def last_requested_changes
+      requested_changes.last    
+    end
+    
     private
     
     def not_submitted_or_approved

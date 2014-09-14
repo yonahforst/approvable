@@ -55,7 +55,9 @@ module Approvable
             
       def apply_changes
         begin
-          self.assign_attributes_without_change_request requested_changes
+          Hash[requested_changes.sort].each do |k,v|
+            self.assign_attributes_without_change_request v if v.is_a? Hash
+          end
         rescue ActiveRecord::UnknownAttributeError => e
           puts p
         end
@@ -98,22 +100,14 @@ module Approvable
       end
       
       def assign_attributes_with_change_request new_attributes
-        # assign_attributes_without_change_request new_attributes
-        #
-        # return false unless valid?
-        #
-        # new_attributes.keys.each {|k| reset_attribute!(k)}
-        # @changed_attributes.clear
-        # clear_aggregation_cache
-        # clear_association_cache
-        #
         ignored_changes = ignored_attributes(new_attributes)
         approvable_changes = approvable_attributes(new_attributes)
 
         if approvable_changes.any?
-          current_change_request || build_current_change_request(requested_changes: {})    
-          existing_changes = current_change_request.requested_changes.except(*ignored_changes.keys)   
-          current_change_request.requested_changes = existing_changes.merge approvable_changes
+          current_change_request || build_current_change_request(requested_changes: {})
+          current_change_request.requested_changes_will_change!
+
+          current_change_request.requested_changes[Time.now.to_i] = approvable_changes          
         end
       
         assign_attributes_without_change_request ignored_changes

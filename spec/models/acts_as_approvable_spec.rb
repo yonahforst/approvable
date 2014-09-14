@@ -101,7 +101,7 @@ module Approvable
         expect(foobar.foo).to eq({image: 'photo.jpg', title: 'me, on the hill'})
         expect(foobar.bar).to eq({description: 'test test test'})
 
-        expect(foobar.requested_changes).to match({foo: {tags: ['me', 'hill', 'on']}, bar: {title: 'blahhhh'}}.stringify_keys)
+        expect(foobar.requested_changes.first[1]).to match({foo: {tags: ['me', 'hill', 'on']}, bar: {title: 'blahhhh'}}.stringify_keys)
       end
       
       it 'accepts nested only attribtues' do
@@ -114,7 +114,7 @@ module Approvable
         
         expect(foobar.foo).to eq({tags: ['me', 'hill', 'on']}.stringify_keys)
         expect(foobar.bar).to eq({title: 'blahhhh'}.stringify_keys)
-        expect(foobar.requested_changes).to match(foo: {image: 'photo.jpg', title: 'me, on the hill'}, bar: {description: 'test test test'} )
+        expect(foobar.requested_changes.first[1]).to match(foo: {image: 'photo.jpg', title: 'me, on the hill'}, bar: {description: 'test test test'} )
       end
       
     end
@@ -212,14 +212,14 @@ module Approvable
       it 'updates a pending change request for a listing' do
         @listing.update title: 'blah blah', description: 'another one'        
         @listing.reload
-        expect(@listing.requested_changes).to eq 'title' => 'blah blah', "description" => 'another one'
+        expect(@listing.requested_changes.first[1]).to eq 'title' => 'blah blah', "description" => 'another one'
 
         expect{
           @listing.update(title: 'new title!!!')
         }.not_to change {@listing.change_requests.count}
 
         @listing.reload
-        expect(@listing.requested_changes).to eq 'title' => 'new title!!!', "description" => 'another one'
+        expect(@listing.requested_changes.first[1]).to eq 'title' => 'new title!!!'
         expect(@listing.change_status).to eq 'pending'
       end
       
@@ -228,14 +228,14 @@ module Approvable
         @listing.update title: 'blah blah', description: 'another one'        
         
         @listing.reload
-        expect(@listing.requested_changes).to include "title" => 'blah blah'
+        expect(@listing.requested_changes.first[1]).to include "title" => 'blah blah'
 
         expect{
           @listing.update(title: original_title)
         }.not_to change {@listing.change_requests.count}
 
         @listing.reload
-        expect(@listing.requested_changes).to eq "title" => original_title, "description" => 'another one'
+        expect(@listing.requested_changes.first[1]).to eq "title" => original_title
         expect(@listing.change_status).to eq 'pending'
       end
 
@@ -250,22 +250,22 @@ module Approvable
         }.not_to change {@listing.change_requests.count}
 
         @listing.reload
-        expect(@listing.requested_changes).to match "title" => 'a brand new title', 'description' => 'another one'
+        expect(@listing.requested_changes.first[1]).to match "title" => 'a brand new title'
         expect(@listing.change_status).to eq 'pending'
       end
 
-      it 'keeps previous changes and adds new changes' do
-        change_request = create(:change_request, :pending, requested_changes: {"title" => 'a brand new title'}, approvable: @listing )
-        @listing.reload
-
-        expect{
-          @listing.update(description: 'a hot bod')
-        }.not_to change {@listing.change_requests.count}
-
-        change_request.reload
-        expect(change_request.requested_changes).to match "title" => 'a brand new title', "description" => 'a hot bod'
-        expect(change_request.state).to eq 'pending'
-      end
+      # it 'keeps previous changes and adds new changes' do
+      #   change_request = create(:change_request, :pending, requested_changes.first[1]: {"title" => 'a brand new title'}, approvable: @listing )
+      #   @listing.reload
+      #
+      #   expect{
+      #     @listing.update(description: 'a hot bod')
+      #   }.not_to change {@listing.change_requests.count}
+      #
+      #   change_request.reload
+      #   expect(change_request.requested_changes.first[1]).to match "title" => 'a brand new title', "description" => 'a hot bod'
+      #   expect(change_request.state).to eq 'pending'
+      # end
 
       it 'updates an existing change request for a rejected listing and changes the status to pending' do
         change_request = create(:change_request, :rejected, approvable: @listing )
@@ -277,7 +277,7 @@ module Approvable
 
         change_request.reload
 
-        expect(change_request.requested_changes).to match "title" => 'a brand new title'
+        expect(change_request.requested_changes.first[1]).to include "title" => 'a brand new title'
         expect(change_request.state).to eq 'pending'
       end
     end
@@ -295,7 +295,7 @@ module Approvable
       
       it 'submits changes with validation' do
         @listing.update(title: 'a brand new title')
-        @listing.current_change_request.update(requested_changes: {title: ''})
+        @listing.current_change_request.update(requested_changes: {Time.now.to_i => {title: ''}})
         expect {
           @listing.submit_changes_with_validation!
         }.to raise_error ActiveRecord::RecordInvalid
