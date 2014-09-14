@@ -54,7 +54,11 @@ module Approvable
       end
             
       def apply_changes
-        self.assign_attributes_without_change_request requested_changes
+        begin
+          self.assign_attributes_without_change_request requested_changes
+        rescue ActiveRecord::UnknownAttributeError => e
+          puts p
+        end
         self
       end
       
