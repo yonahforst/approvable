@@ -4,15 +4,9 @@ require 'activesupport/json_encoder'
 require 'amoeba'
 
 module Approvable
-  cattr_accessor :disabled, :auto_approve, :validate_with_changes
-  
-  def ignore_auto_approve &block
-    auto_approve_was = auto_approve
-    auto_approve = false
-    block.call
-    auto_approve = auto_approve_was
-  end
-    
+  cattr_accessor :disabled, :validate_with_changes
+  disabled = false
+  validate_with_changes = false  
   
   class Engine < ::Rails::Engine
     isolate_namespace Approvable
@@ -32,7 +26,6 @@ module Approvable
       g.assets false
       g.helper false
     end
-    
 
   end
 end

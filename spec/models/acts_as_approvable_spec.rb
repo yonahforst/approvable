@@ -3,7 +3,6 @@ require 'rails_helper'
 module Approvable
   describe ActsAsApprovable do
     before(:each) do
-      Approvable.auto_approve = false
       @listing = create(:listing, :approved)
     end
     
@@ -12,10 +11,11 @@ module Approvable
         expect(Listing).to respond_to :acts_as_approvable
       end
       
-      it 'applies changes and auto approves' do
-        Approvable.auto_approve = true
-
+      it 'applies changes if Approvable is disabled' do
+        Approvable.disabled = true
         @listing.update(title: 'a brand new title')
+        Approvable.disabled = false
+        
         @listing.reload
 
         expect(@listing.title).to eq 'a brand new title'

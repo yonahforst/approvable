@@ -12,7 +12,7 @@ module Approvable
         has_many :change_requests, as: :approvable, class_name: 'Approvable::ChangeRequest', dependent: :destroy, validate: false
         has_one :current_change_request, -> {where.not(state: 'approved') }, as: :approvable, class_name: 'Approvable::ChangeRequest', autosave: true, validate: true
         cattr_accessor :filter_attrs, :filter_type
-
+                
         amoeba { enable }
         
         if options[:except]
@@ -34,6 +34,8 @@ module Approvable
         unless method_defined?(:valid_without_changes?)
           alias_method_chain :valid?, :changes if Approvable.validate_with_changes
         end
+        
+
       end
 
     end
@@ -55,7 +57,7 @@ module Approvable
             
       def apply_changes
         begin
-          Hash[requested_changes.sort].each do |k,v|
+          requested_changes.each do |k,v|
             self.assign_attributes_without_change_request v if v.is_a? Hash
           end
         rescue ActiveRecord::UnknownAttributeError => e
@@ -100,29 +102,37 @@ module Approvable
       end
       
       def assign_attributes_with_change_request new_attributes
-        ignored_changes = ignored_attributes(new_attributes)
-        approvable_changes = approvable_attributes(new_attributes)
+        if Approvable.disabled
+          assign_attributes_without_change_request new_attributes
+        else
+          ignored_changes = ignored_attributes(new_attributes)
+          approvable_changes = approvable_attributes(new_attributes)
 
-        if approvable_changes.any?
-          current_change_request || build_current_change_request(requested_changes: {})
-          current_change_request.requested_changes_will_change!
+          if approvable_changes.any?
+            current_change_request || build_current_change_request(requested_changes: {})
+            current_change_request.requested_changes_will_change!
 
-          current_change_request.requested_changes[Time.now.to_i] = approvable_changes          
-        end
+            current_change_request.requested_changes[Time.now.to_i] = approvable_changes          
+          end
       
-        assign_attributes_without_change_request ignored_changes
+          assign_attributes_without_change_request ignored_changes
+        end
       end      
 
 
       def valid_with_changes? options = {}
-        errors.clear
-        dup = self.amoeba_dup
-        dup.apply_changes
-        dup.valid_without_changes? options
-        dup.errors.each do |attribute, error|
-          errors[attribute] = error
+        if Approvable.disabled
+          valid_without_changes? options
+        else
+          errors.clear
+          dup = self.amoeba_dup
+          dup.apply_changes
+          dup.valid_without_changes? options
+          dup.errors.each do |attribute, error|
+            errors[attribute] = error
+          end
+          errors.empty?
         end
-        errors.empty?
       end
       
       private
