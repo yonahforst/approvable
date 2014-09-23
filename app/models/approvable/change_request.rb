@@ -6,7 +6,7 @@ module Approvable
     validate :no_outstanding_change_requests, on: :create
     # validate :not_submitted_or_approved, if: :requested_changes_changed?
 
-    after_save :update_rejected_to_pending, if: :requested_changes_changed?
+    after_update :update_rejected_to_pending, if: :requested_changes_changed?
     
     scope :unapproved, -> {where.not(state: 'approved')}
     
