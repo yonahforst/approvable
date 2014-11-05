@@ -48,7 +48,8 @@ module Approvable
     end
     
     def last_requested_changes
-      requested_changes.last    
+      key = requested_changes.keys.map(&:to_i).sort.last
+      requested_changes[key.to_s]    
     end
     
     private

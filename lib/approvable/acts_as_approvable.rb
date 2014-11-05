@@ -56,12 +56,12 @@ module Approvable
       end
             
       def apply_changes
-        begin
-          requested_changes.each do |k,v|
+        requested_changes.each do |k,v|
+          begin
             self.assign_attributes_without_change_request v if v.is_a? Hash
+          rescue ActiveRecord::UnknownAttributeError => e
+            puts e
           end
-        rescue ActiveRecord::UnknownAttributeError => e
-          puts p
         end
         self
       end

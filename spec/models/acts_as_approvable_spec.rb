@@ -276,8 +276,7 @@ module Approvable
         }.not_to change {@listing.change_requests.count}
 
         change_request.reload
-
-        expect(change_request.requested_changes.first[1]).to include "title" => 'a brand new title'
+        expect(change_request.last_requested_changes['title']).to eq 'a brand new title'
         expect(change_request.state).to eq 'pending'
       end
     end
